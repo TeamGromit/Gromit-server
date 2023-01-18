@@ -56,16 +56,6 @@ public class UserAccount extends BaseEntity {
     private boolean isAlarm;
     private Timestamp alarm;
 
-    public UserAccount(String providerId, String githubName, String nickname, int commits, int todayCommit, boolean isDeleted, boolean isAlarm, Timestamp alarm) {
-        this.providerId = providerId;
-        this.githubName = githubName;
-        this.nickname = nickname;
-        this.commits = commits;
-        this.todayCommit = todayCommit;
-        this.isDeleted = isDeleted;
-        this.isAlarm = isAlarm;
-        this.alarm = alarm;
-    }
 
     @Override
     public boolean equals(Object o) {
