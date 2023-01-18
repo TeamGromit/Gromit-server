@@ -52,13 +52,4 @@ public class Challenge extends BaseEntity {
 
     private String password;
 
-    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword) {
-        this.userAccount = userAccount;
-        this.title = title;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.goal = goal;
-        this.recruits = recruits;
-        this.isPassword = isPassword;
-    }
 }
