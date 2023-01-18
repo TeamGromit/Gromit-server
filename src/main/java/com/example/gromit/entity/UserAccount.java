@@ -50,11 +50,9 @@ public class UserAccount extends BaseEntity {
     @Column(nullable = false)
     private int todayCommit;
     @Column(nullable = false)
-    @ColumnDefault("0")
     private boolean isDeleted;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
     private boolean isAlarm;
     private Timestamp alarm;
 

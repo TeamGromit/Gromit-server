@@ -35,7 +35,6 @@ public class Member extends BaseEntity {
     private int commits;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
     private boolean isDeleted;
 
     public Member(Challenge challenge, UserAccount userAccount, int commits, boolean isDeleted) {
