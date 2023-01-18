@@ -1,10 +1,7 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -52,7 +49,8 @@ public class Challenge extends BaseEntity {
 
     private String password;
 
-    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword) {
+    @Builder
+    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword, String password) {
         this.userAccount = userAccount;
         this.title = title;
         this.startDate = startDate;
@@ -60,5 +58,6 @@ public class Challenge extends BaseEntity {
         this.goal = goal;
         this.recruits = recruits;
         this.isPassword = isPassword;
+        this.password = password;
     }
 }
