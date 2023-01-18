@@ -38,7 +38,7 @@ public class UserAccount extends BaseEntity {
     private List<Member> members = new LinkedList<>();
 
     @Column(nullable = false,length = 255)
-    private String providerId;
+    private String email;
 
     @Column(nullable = false,length = 255)
     private String githubName;
