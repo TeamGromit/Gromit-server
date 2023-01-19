@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.List;
-=
+
 @RepositoryRestResource
 public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
     @Query(value = "select challenge.title, challenge.start_date, challenge.goal, challenge.recruits, (select count(*) from member where challenge.id= member.challenge_id) currents from challenge", nativeQuery = true)
