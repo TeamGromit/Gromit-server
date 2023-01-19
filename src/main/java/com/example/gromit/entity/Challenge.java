@@ -1,11 +1,8 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
+import org.apache.catalina.User;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -33,6 +30,8 @@ public class Challenge extends BaseEntity {
     @OneToMany
     private List<Member> members = new LinkedList<>();
 
+    private Long userId;
+
     @Column(nullable = false,length =50)
     private String title;
 
@@ -52,4 +51,27 @@ public class Challenge extends BaseEntity {
 
     private String password;
 
+    @Builder
+    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword, String password) {
+        this.userAccount = userAccount;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.goal = goal;
+        this.recruits = recruits;
+        this.isPassword = isPassword;
+        this.password = password;
+    }
+
+    @Builder
+    public Challenge(Long userAccountId, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword, String password) {
+        this.userId= userAccountId;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.goal = goal;
+        this.recruits = recruits;
+        this.isPassword = isPassword;
+        this.password = password;
+    }
 }

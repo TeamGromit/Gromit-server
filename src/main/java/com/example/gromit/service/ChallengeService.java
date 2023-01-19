@@ -2,6 +2,8 @@ package com.example.gromit.service;
 
 import com.example.gromit.dto.challenge.GetChallengeListRes;
 import com.example.gromit.dto.challenge.GetChallengeRes;
+import com.example.gromit.dto.challenge.ChallengeRes;
+import com.example.gromit.dto.challenge.PostChallengeReq;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.repository.ChallengeRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +20,49 @@ import java.util.stream.Collectors;
 public class ChallengeService {
     private final ChallengeRepository challengeRepository;
 
-    public List<GetChallengeListRes> getAllChallenges(Pageable pageable) {
-        return challengeRepository.findAll(pageable).stream()
-                .map(GetChallengeListRes::new)
-                .collect(Collectors.toList());
-
-    }
+//    public List<GetChallengeListRes> getAllChallenges(Pageable pageable) {
+//        return challengeRepository.findAll(pageable).stream()
+//                .map(GetChallengeListRes::new)
+//                .collect(Collectors.toList());
+//
+//    }
     public GetChallengeRes get(Long id) {
-        Challenge challenge = challengeRepository.findById(id)
+        Challenge challenge2 = challengeRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
         return GetChallengeRes.builder()
-                .masterName(challenge.getUserAccount().getNickname())
-                .title(challenge.getTitle())
-                .startDate(challenge.getStartDate())
-                .endDate(challenge.getEndDate())
-                .goal(challenge.getGoal())
+                .masterName(challenge2.getUserAccount().getNickname())
+                .title(challenge2.getTitle())
+                .startDate(challenge2.getStartDate())
+                .endDate(challenge2.getEndDate())
+                .goal(challenge2.getGoal())
                 .build();
     }
+
+//    public void create(PostChallengeReq postChallengeReq){
+//        Challenge challenge = Challenge.builder()
+//                .userAccount(postChallengeReq.getUserId())
+//                .title(postChallengeReq.getTitle())
+//                .startDate(postChallengeReq.getStartDate())
+//                .endDate(postChallengeReq.getEndDate())
+//                .goal(postChallengeReq.getGoal())
+//                .recruits(postChallengeReq.getRecruits())
+//                .isPassword(postChallengeReq.isPassword())
+//                .password(postChallengeReq.getPassword())
+//                .build();
+//        challengeRepository.save(challenge);
+//    }
+
+//    public void create(PostChallengeReq postChallengeReq) {
+//        Challenge challenge = Challenge.builder()
+//                .userId(postChallengeReq.getUserAccount())
+//                .title(postChallengeReq.getTitle())
+//                .startDate(postChallengeReq.getStartDate())
+//                .endDate(postChallengeReq.getEndDate())
+//                .goal(postChallengeReq.getGoal())
+//                .recruits(postChallengeReq.getRecruits())
+//                .isPassword(postChallengeReq.isPassword())
+//                .password(postChallengeReq.getPassword())
+//                .build();
+//        challengeRepository.save(challenge);
+//    }
 }

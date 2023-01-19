@@ -1,7 +1,10 @@
 package com.example.gromit.controller;
 
+import com.example.gromit.dto.challenge.ChallengeMember;
 import com.example.gromit.dto.challenge.GetChallengeListRes;
 import com.example.gromit.dto.challenge.GetChallengeRes;
+import com.example.gromit.dto.challenge.PostChallengeReq;
+import com.example.gromit.repository.ChallengeRepository;
 import com.example.gromit.service.ChallengeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
@@ -21,6 +27,7 @@ public class ChallengeController {
 
 
     private final ChallengeService challengeService;
+    private final ChallengeRepository challengeRepository;
 
     @GetMapping("/hello")
     @ResponseBody
@@ -28,9 +35,14 @@ public class ChallengeController {
         return "Hello World";
     }
 
+//    @GetMapping("/challenges")
+//    public List<GetChallengeListRes> getAllChallenges(@PageableDefault(size=5) Pageable pageable) {
+//        return challengeService.getAllChallenges(pageable);
+//    }
+
     @GetMapping("/challenges")
-    public List<GetChallengeListRes> getAllChallenges(@PageableDefault(size=5) Pageable pageable) {
-        return challengeService.getAllChallenges(pageable);
+    public List<ChallengeMember> getAllChallenges(@PageableDefault(size=5) Pageable pageable) {
+        return challengeRepository.getAllChallenges(pageable);
     }
 
     @GetMapping("/challenges/{challengeId}")
@@ -39,4 +51,8 @@ public class ChallengeController {
     }
 
 
+//    @PostMapping("/create")
+//    public void Challenge(@RequestBody @Valid PostChallengeReq postChallengeReq){
+//        challengeService.create(postChallengeReq);
+//    }
 }
