@@ -27,7 +27,7 @@ public class Challenge extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(optional = false)
     private UserAccount userAccount;
 
     @OneToMany
