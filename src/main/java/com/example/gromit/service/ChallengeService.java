@@ -58,32 +58,4 @@ public class ChallengeService {
                 .build();
         challengeRepository.save(challenge);
     }
-
-//    public void create(PostChallengeReq postChallengeReq){
-//        Challenge challenge = Challenge.builder()
-//                .userAccount(postChallengeReq.getUserId())
-//                .title(postChallengeReq.getTitle())
-//                .startDate(postChallengeReq.getStartDate())
-//                .endDate(postChallengeReq.getEndDate())
-//                .goal(postChallengeReq.getGoal())
-//                .recruits(postChallengeReq.getRecruits())
-//                .isPassword(postChallengeReq.isPassword())
-//                .password(postChallengeReq.getPassword())
-//                .build();
-//        challengeRepository.save(challenge);
-//    }
-
-//    public void create(PostChallengeReq postChallengeReq) {
-//        Challenge challenge = Challenge.builder()
-//                .userId(postChallengeReq.getUserAccount())
-//                .title(postChallengeReq.getTitle())
-//                .startDate(postChallengeReq.getStartDate())
-//                .endDate(postChallengeReq.getEndDate())
-//                .goal(postChallengeReq.getGoal())
-//                .recruits(postChallengeReq.getRecruits())
-//                .isPassword(postChallengeReq.isPassword())
-//                .password(postChallengeReq.getPassword())
-//                .build();
-//        challengeRepository.save(challenge);
-//    }
 }

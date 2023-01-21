@@ -56,10 +56,4 @@ public class ChallengeController {
 
         challengeService.create(userId, postChallengeReq);
     }
-
-
-//    @PostMapping("/create")
-//    public void Challenge(@RequestBody @Valid PostChallengeReq postChallengeReq){
-//        challengeService.create(postChallengeReq);
-//    }
 }

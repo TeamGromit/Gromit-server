@@ -49,6 +49,5 @@ class GromitApplicationTests {
 				.isDeleted(false)
 				.build();
 		memberRepository.save(member);
-
 	}
 }
