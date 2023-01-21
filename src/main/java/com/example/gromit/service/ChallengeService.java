@@ -54,6 +54,7 @@ public class ChallengeService {
                 .recruits(postChallengeReq.getRecruits())
                 .isPassword(postChallengeReq.isPassword())
                 .password(postChallengeReq.getPassword())
+                .isDeleted(postChallengeReq.isDeleted())
                 .build();
         challengeRepository.save(challenge);
     }

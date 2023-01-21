@@ -54,7 +54,7 @@ public class Challenge extends BaseEntity {
     private boolean isDeleted;
 
     @Builder
-    public Challenge(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits, boolean isPassword, String password) {
+    public Challenge(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits, boolean isPassword, String password, boolean isDeleted) {
         this.userAccount = userAccount;
         this.title = title;
         this.startDate = startDate;
@@ -63,5 +63,6 @@ public class Challenge extends BaseEntity {
         this.recruits = recruits;
         this.isPassword = isPassword;
         this.password = password;
+        this.isDeleted = isDeleted;
     }
 }

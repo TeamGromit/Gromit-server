@@ -52,7 +52,7 @@ public class ChallengeController {
     @PostMapping("/challenges") //create
     public void Challenge(@RequestBody @Valid PostChallengeReq postChallengeReq){
         //Long userId = jwtProvider.getUserIdx();
-        Long userId = 2L;
+        Long userId = 1L;
 
         challengeService.create(userId, postChallengeReq);
     }

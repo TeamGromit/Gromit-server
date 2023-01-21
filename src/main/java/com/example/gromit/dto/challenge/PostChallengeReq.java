@@ -40,6 +40,8 @@ public class PostChallengeReq {
 
     private String password;
 
+    private boolean isDeleted;
+
     @Builder
     public PostChallengeReq(Challenge challenge) {
         this.userAccount = challenge.getUserAccount();
@@ -50,5 +52,6 @@ public class PostChallengeReq {
         this.recruits = challenge.getRecruits();
         this.isPassword = challenge.isPassword();
         this.password = challenge.getPassword();
+        this.isDeleted = challenge.isDeleted();
     }
 }

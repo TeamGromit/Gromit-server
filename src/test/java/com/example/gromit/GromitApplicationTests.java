@@ -37,6 +37,7 @@ class GromitApplicationTests {
 				.recruits(6)
 				.isPassword(true)
 				.password("asfasa23")
+				.isDeleted(false)
 				.build();
 		this.challengeRepository.save(challenge);
 
