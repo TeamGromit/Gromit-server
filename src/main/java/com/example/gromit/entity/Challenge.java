@@ -28,9 +28,10 @@ public class Challenge extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="user_account_id")
     private UserAccount userAccount;
 
-    @OneToMany
+    @OneToMany(mappedBy = "challenge")
     private List<Member> members = new LinkedList<>();
 
     @Column(nullable = false,length =50)
@@ -51,6 +52,9 @@ public class Challenge extends BaseEntity {
     private boolean isPassword;
 
     private String password;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 
     public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword) {
         this.userAccount = userAccount;

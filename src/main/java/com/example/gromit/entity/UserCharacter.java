@@ -25,9 +25,11 @@ public class UserCharacter extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name="characters_id")
     private Characters characters;
 
     private String status;
