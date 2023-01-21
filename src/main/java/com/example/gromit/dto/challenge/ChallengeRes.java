@@ -4,14 +4,15 @@ import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 public class ChallengeRes {
     private final UserAccount userAccount;
     private final String title;
-    private final LocalDateTime startDate;
-    private final LocalDateTime endDate;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
     private final int goal;
     private final int recruits;
     private final boolean isPassword;

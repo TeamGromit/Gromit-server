@@ -5,12 +5,13 @@ import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 public class GetChallengeListRes {
     private final String title;
-    private final LocalDateTime startDate;
+    private final LocalDate startDate;
     private final int goal;
 
     private final String currents;

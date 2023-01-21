@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChallengeController {
 
-
     private final ChallengeService challengeService;
     private final ChallengeRepository challengeRepository;
 
@@ -45,9 +44,17 @@ public class ChallengeController {
         return challengeRepository.getAllChallenges(pageable);
     }
 
-    @GetMapping("/challenges/{challengeId}")
-    public GetChallengeRes get(@PathVariable Long challengeId) {
-        return challengeService.get(challengeId);
+//    @GetMapping("/challenges/{challengeId}")
+//    public GetChallengeRes get(@PathVariable Long challengeId) {
+//        return challengeService.get(challengeId);
+//    }
+
+    @PostMapping("/challenges") //create
+    public void Challenge(@RequestBody @Valid PostChallengeReq postChallengeReq){
+        //Long userId = jwtProvider.getUserIdx();
+        Long userId = 2L;
+
+        challengeService.create(userId, postChallengeReq);
     }
 
 

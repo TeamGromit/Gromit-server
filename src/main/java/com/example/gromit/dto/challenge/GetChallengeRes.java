@@ -5,14 +5,15 @@ import com.example.gromit.entity.UserAccount;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 public class GetChallengeRes {
     private final String masterName;
     private final String title;
-    private final LocalDateTime startDate;
-    private final LocalDateTime endDate;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
     private final int goal;
 
     public GetChallengeRes(Challenge challenge) {
@@ -25,7 +26,7 @@ public class GetChallengeRes {
 
     @Builder
 
-    public GetChallengeRes(Long id, String masterName, String title, LocalDateTime startDate, LocalDateTime endDate, int goal) {
+    public GetChallengeRes(Long id, String masterName, String title, LocalDate startDate, LocalDate endDate, int goal) {
         this.masterName = masterName;
         this.title = title;
         this.startDate = startDate;
