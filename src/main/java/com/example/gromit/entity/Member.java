@@ -26,9 +26,11 @@ public class Member extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
     @Column(nullable = false)
