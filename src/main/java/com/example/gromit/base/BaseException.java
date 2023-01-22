@@ -1,0 +1,25 @@
+package com.example.gromit.base;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
+
+/**
+ * Validation 후 Exception 처리하는 클래스
+ */
+@Slf4j
+@RestControllerAdvice
+public class BaseException {
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity onException(Exception exception){
+        return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getMessage()), null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+}

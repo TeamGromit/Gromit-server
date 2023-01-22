@@ -1,6 +1,7 @@
 package com.example.gromit.service;
 
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
+import com.example.gromit.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -17,6 +18,8 @@ import java.net.URL;
 @RequiredArgsConstructor
 @Service
 public class UserAccountService {
+
+    private final UserAccountRepository userAccountRepository;
 
     /**
      * 깃허브 닉네임 조회 비즈니스 로직
@@ -66,5 +69,14 @@ public class UserAccountService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 그로밋 자체 닉네임 중복 조회 비즈니스 로직
+     * @param nickname
+     * @return 데이터베이스에 존재하는 닉네임이면 true, 존재하지 않은면 false
+     */
+    public boolean checkNickname(String nickname){
+        return userAccountRepository.existsByNickname(nickname);
     }
 }

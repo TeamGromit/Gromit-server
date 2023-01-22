@@ -8,9 +8,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 public class GithubNicknameResponseDto {
-
     private final String nickname;
-
     private final String img;
 
     private GithubNicknameResponseDto(String nickname, String img) {
