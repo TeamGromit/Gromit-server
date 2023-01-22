@@ -45,7 +45,7 @@ public class BaseResponse<T> {
         this.code = status.getCode();
     }
 
-    public static <T> BaseResponse<T> onFailure(BaseResponseStatus status) {
-        return new BaseResponse<>(status.getCode(), false, status.getMessage(),null);
+    public static <T> BaseResponse<T> onFailure(int code,String message) {
+        return new BaseResponse<>(code, false, message,null);
     }
 }

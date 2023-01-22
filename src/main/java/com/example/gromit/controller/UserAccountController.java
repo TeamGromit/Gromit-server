@@ -37,7 +37,7 @@ public class UserAccountController {
         GithubNicknameResponseDto githubNicknameResponseDto = userAccountService.getGithubUser(githubNickname);
 
         if (githubNicknameResponseDto == null) {
-            return BaseResponse.onFailure(GITHUB_NICKNAME_NOT_FOUND);
+            return BaseResponse.onFailure(3001,"해당 깃허브 닉네임을 찾을 수 없습니다.");
         }
 
         return BaseResponse.onSuccess(githubNicknameResponseDto);
@@ -53,7 +53,7 @@ public class UserAccountController {
         log.info(nickname);
 
         if(userAccountService.checkNickname(nickname)){
-            return BaseResponse.onFailure(NICKNAME_ALREADY_EXIST);
+            return BaseResponse.onFailure(3002,"이미 존재하는 닉네임입니다.");
         }
 
         return BaseResponse.onSuccess(NicknameResponseDto.of(nickname));
