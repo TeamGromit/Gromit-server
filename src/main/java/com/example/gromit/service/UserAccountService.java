@@ -1,5 +1,6 @@
 package com.example.gromit.service;
 
+import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
@@ -28,6 +29,7 @@ import static com.example.gromit.exception.ErrorCode.DUPLICATED_NICKNAME;
 public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
+    private final JwtService jwtService;
 
     /**
      * 회원가입

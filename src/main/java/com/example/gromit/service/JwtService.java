@@ -1,9 +1,10 @@
 package com.example.gromit.service;
 
 import com.example.gromit.dto.user.TokenDto;
+import com.example.gromit.exception.UnauthorizedException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +22,7 @@ import static com.example.gromit.exception.ErrorCode.EXPIRED_TOKEN;
 @RequiredArgsConstructor
 public class JwtService {
 
-//    private final CustomUserDetailService customUserDetailService;
+    private final CustomUserDetailService customUserDetailService;
 
     @Value("${jwt.secret}")
     private String JWT_SECRET;
@@ -89,3 +90,4 @@ public class JwtService {
     public String getToken(HttpServletRequest request) {
         return request.getHeader("X-AUTH-TOKEN");
     }
+}
