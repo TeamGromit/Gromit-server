@@ -23,12 +23,13 @@ public enum ErrorCode {
     /* User 관련 오류 */
     USER_ALREADY_EXIST(3003, "이미 가입된 유저입니다.",BAD_REQUEST),
     USER_NOT_FOUND(3004, "가입되지 않은 유저입니다.",NOT_FOUND),
-    DUPLICATED_NICKNAME(3005, "중복된 닉네임 입니다.",BAD_REQUEST);
+    DUPLICATED_NICKNAME(3005, "중복된 닉네임 입니다.",BAD_REQUEST),
+    DUPLICATED_EMAIL(3006, "중복된 이메일 입니다.",BAD_REQUEST);
+
 
     /* challenge 관련 오류 */
 
     /* character 관련 오류 */
-
 
 
     private int code;

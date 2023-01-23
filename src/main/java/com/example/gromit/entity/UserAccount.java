@@ -48,6 +48,9 @@ public class UserAccount extends BaseEntity {
 
     @Column(nullable = false,length = 50)
     private String nickname;
+
+    @Column(nullable = false)
+    private String provider;
     @Column(nullable = false)
     private int commits;
     @Column(nullable = false)
@@ -58,6 +61,21 @@ public class UserAccount extends BaseEntity {
     @Column(nullable = false)
     private boolean isAlarm;
     private Timestamp alarm;
+
+    private UserAccount(String email, String githubName, String nickname, String provider, int commits, int todayCommit, boolean isDeleted, boolean isAlarm) {
+        this.email = email;
+        this.githubName = githubName;
+        this.nickname = nickname;
+        this.provider = provider;
+        this.commits = commits;
+        this.todayCommit = todayCommit;
+        this.isDeleted = isDeleted;
+        this.isAlarm = isAlarm;
+    }
+
+    public static UserAccount of(String email, String githubName, String nickname, String provider, int commits, int todayCommit, boolean isDeleted, boolean isAlarm) {
+        return new UserAccount(email, githubName, nickname, provider, commits, todayCommit, isDeleted, isAlarm);
+    }
 
 
     @Override
@@ -72,4 +90,7 @@ public class UserAccount extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+
+
 }
