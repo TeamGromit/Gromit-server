@@ -70,9 +70,6 @@ public class UserAccount extends BaseEntity implements UserDetails {
     @Column(nullable = false,length = 255)
     private String email;
     @Nullable
-    private String accessToken;
-
-    @Nullable
     private String refreshToken;
 
     private UserAccount(String nickname, String githubName, int commits, int todayCommit, boolean isDeleted, boolean isAlarm, String provider, String email) {

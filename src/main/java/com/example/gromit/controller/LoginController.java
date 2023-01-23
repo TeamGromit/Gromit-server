@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @Slf4j
 @RequiredArgsConstructor
 @Validated
-@RequestMapping("/users")
+@RequestMapping("/login")
 @RestController
 public class LoginController {
 
