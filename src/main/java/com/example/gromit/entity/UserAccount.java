@@ -30,6 +30,9 @@ public class UserAccount extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToMany
+    private List<Challenge> challenges = new LinkedList<>();
+
     @OrderBy("createdAt ASC")
     @OneToMany
     private List<UserCharacter> userCharacters = new LinkedList<>();
