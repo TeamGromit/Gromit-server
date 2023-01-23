@@ -32,9 +32,6 @@ public class UserAccountService {
     /**
      * 회원가입
      */
-    /**
-     * 회원가입
-     */
     @Transactional
     public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto){
 
