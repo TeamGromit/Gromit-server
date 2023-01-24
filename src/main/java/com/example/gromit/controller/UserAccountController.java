@@ -3,14 +3,12 @@ package com.example.gromit.controller;
 import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
+import com.example.gromit.exception.BaseException;
 import com.example.gromit.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -57,5 +55,22 @@ public class UserAccountController {
         }
 
         return BaseResponse.onSuccess(NicknameResponseDto.of(nickname));
+    }
+
+    /**
+     * 깃허브 커밋 조회 API
+     */
+    @PatchMapping("/reload") //커밋 새로고침
+    @ResponseBody
+    public BaseResponse<String> reloadCommits() {
+        try {
+            //Long userId = jwtProvider.getUserIdx(); //토큰으로 유저 정보 받아오기 - 수정 필요
+            Long userId = 3L; //임시 값
+
+            userAccountService.reloadCommits(userId);
+            return new BaseResponse<>("새로고침에 성공하였습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getHttpStatus().toString()); //수정 필요
+        }
     }
 }

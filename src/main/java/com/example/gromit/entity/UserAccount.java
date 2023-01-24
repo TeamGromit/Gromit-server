@@ -72,4 +72,10 @@ public class UserAccount extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    //추가
+    public void reloadCommits(int todayCommit, int commits){
+        this.todayCommit = todayCommit;
+        this.commits = commits;
+    }
 }

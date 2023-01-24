@@ -1,6 +1,7 @@
 package com.example.gromit.service;
 
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
+import com.example.gromit.entity.UserAccount;
 import com.example.gromit.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
@@ -14,7 +15,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDate;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 @RequiredArgsConstructor
 @Service
 public class UserAccountService {
@@ -78,5 +84,55 @@ public class UserAccountService {
      */
     public boolean checkNickname(String nickname){
         return userAccountRepository.existsByNickname(nickname);
+    }
+
+
+    /**
+     * 깃허브 커밋 내역 조회
+     */
+    //반환 값 변경?
+    public void reloadCommits(Long userId){
+        UserAccount userAccount = userAccountRepository.findById(userId).get();
+        String now = LocalDate.now().toString();
+
+        System.out.println(now);
+
+        String gitHubName = userAccount.getGithubName();
+        int oldTodayCommit = userAccount.getTodayCommit();
+        int commits = userAccount.getCommits();
+        int contributions = 0;
+
+        String url = "https://github.com/users/" + gitHubName + "/contributions";
+        try {
+            Document rawData = Jsoup.connect(url).get();
+
+            Elements articles = rawData.select("rect");
+            for(Element article : articles) {
+
+                String date = article.attr("data-date");
+                String cont_text = article.ownText();
+                String[] result = cont_text.split(" ");
+
+                if (date.equals(now)) {
+                    if (result[0] != null && !result[0].equals("")){
+                        if(result[0].equals("No")) {
+                            result[0] = "0";
+                        }
+
+                        contributions = Integer.parseInt(result[0]); //선언 어디서?
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (oldTodayCommit != contributions) {
+            int newCommits = commits + contributions - oldTodayCommit;
+
+            userAccount.reloadCommits(contributions, newCommits);
+
+            userAccountRepository.save(userAccount); //if문 밖으로..?
+        }
     }
 }
