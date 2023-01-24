@@ -1,4 +1,4 @@
-package com.example.gromit.dto.UserCharacter;
+package com.example.gromit.dto.UserCharacter.response;
 
 import lombok.*;
 

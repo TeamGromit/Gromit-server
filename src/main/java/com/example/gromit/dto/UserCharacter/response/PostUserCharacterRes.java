@@ -1,4 +1,4 @@
-package com.example.gromit.dto.UserCharacter;
+package com.example.gromit.dto.UserCharacter.response;
 
 import com.example.gromit.entity.Characters;
 import com.example.gromit.entity.UserAccount;

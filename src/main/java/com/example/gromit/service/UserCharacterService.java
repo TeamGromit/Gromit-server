@@ -1,7 +1,7 @@
 package com.example.gromit.service;
 
-import com.example.gromit.dto.UserCharacter.GetCollectionrRes;
-import com.example.gromit.dto.UserCharacter.PostUserCharacterRes;
+import com.example.gromit.dto.UserCharacter.response.GetCollectionrRes;
+import com.example.gromit.dto.UserCharacter.response.PostUserCharacterRes;
 import com.example.gromit.entity.Characters;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
@@ -9,7 +9,6 @@ import com.example.gromit.repository.CharacterRepository;
 import com.example.gromit.repository.UserCharacterRepository;
 import com.example.gromit.repository.UserCharacterSpecification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class UserCharacterService {
         String status = "0";
 
         Characters egg = characterRepository.findById(Long.valueOf(1)).orElseThrow();
-        UserCharacter userCharacter = new UserCharacter(Long.valueOf(1), user, egg, status);
+        UserCharacter userCharacter = new UserCharacter(null, user, egg, status);
 
         UserCharacter userCharacter1 = userCharacterRepository.save(userCharacter);
 
