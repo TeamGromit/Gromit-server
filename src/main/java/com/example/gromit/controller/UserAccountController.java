@@ -46,15 +46,15 @@ public class UserAccountController {
         }
 
         // 회원 가입 비즈니스 로직
-        userAccountService.signUp(signUpRequestDto);
+        SignUpResponseDto signUpResponseDto = userAccountService.signUp(signUpRequestDto);
 
-        return BaseResponse.onSuccess(null);
+        return BaseResponse.onSuccess(signUpResponseDto);
     }
 
     /**
      * 깃허브 닉네임 조회 API
      */
-    @GetMapping("github/{nickname}")
+    @GetMapping("/github/{nickname}")
     public BaseResponse<GithubNicknameResponseDto> checkGithubNickname(@NotBlank(message = "깃허브 닉네임을 입력해주세요.")
                                                                        @PathVariable("nickname") String githubNickname) {
         log.info(githubNickname);
@@ -71,7 +71,7 @@ public class UserAccountController {
     /**
      * 닉네임 조회 API
      */
-    @GetMapping("{nickname}")
+    @GetMapping("/{nickname}")
     public BaseResponse<NicknameResponseDto> checkNickname(
             @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.")
             @PathVariable("nickname") String nickname) {
