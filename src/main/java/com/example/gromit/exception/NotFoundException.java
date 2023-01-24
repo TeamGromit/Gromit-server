@@ -1,0 +1,23 @@
+package com.example.gromit.exception;
+
+import java.util.Map;
+
+public class NotFoundException extends BaseException{
+
+    private String message;
+
+    public NotFoundException(String message){
+        super(ErrorCode._BAD_REQUEST);
+        this.message = message;
+    }
+
+
+    public NotFoundException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    public NotFoundException(ErrorCode errorCode, Map<String, String> data) {
+        super(errorCode, data);
+    }
+}
+

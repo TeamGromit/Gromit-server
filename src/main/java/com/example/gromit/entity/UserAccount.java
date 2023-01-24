@@ -1,20 +1,20 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import io.micrometer.core.lang.Nullable;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @AllArgsConstructor
@@ -22,32 +22,34 @@ import java.util.Objects;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
-public class UserAccount extends BaseEntity {
+@Builder
+public class UserAccount extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    private List<Challenge> challenges = new LinkedList<>();
+    @Column(nullable = false,length = 50)
+    private String nickname;
+
 
     @OrderBy("createdAt ASC")
     @OneToMany
+    @ToString.Exclude
     private List<UserCharacter> userCharacters = new LinkedList<>();
 
     @OneToMany
+    @ToString.Exclude
     private List<Member> members = new LinkedList<>();
 
-    @Column(nullable = false,length = 255)
-    private String email;
 
     @Column(nullable = false,length = 255)
     private String githubName;
 
-    @Column(nullable = false,length = 50)
-    private String nickname;
+
     @Column(nullable = false)
     private int commits;
     @Column(nullable = false)
@@ -59,6 +61,41 @@ public class UserAccount extends BaseEntity {
     private boolean isAlarm;
     private Timestamp alarm;
 
+    /**
+     * 애플 로그인 구현 컬럼들
+     */
+
+    @Column(nullable = false)
+    private String provider;
+
+    @Email
+    @Column(nullable = false,length = 255)
+    private String email;
+    @Nullable
+    private String refreshToken;
+
+    private UserAccount(String nickname, String githubName, int commits, int todayCommit, boolean isDeleted, boolean isAlarm, String provider, String email) {
+        this.nickname = nickname;
+        this.githubName = githubName;
+        this.commits = commits;
+        this.todayCommit = todayCommit;
+        this.isDeleted = isDeleted;
+        this.isAlarm = isAlarm;
+        this.provider = provider;
+        this.email = email;
+    }
+
+    public static UserAccount of(String nickname, String githubName, int commits, int todayCommit , String provider, String email,boolean isDeleted, boolean isAlarm) {
+        return new UserAccount(nickname, githubName, commits, todayCommit, isDeleted, isAlarm, provider, email);
+    }
+
+    public boolean isDeleted() {
+        return false;
+    }
+
+    public boolean isAlarm() {
+        return false;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -77,5 +114,40 @@ public class UserAccount extends BaseEntity {
     public void reloadCommits(int todayCommit, int commits){
         this.todayCommit = todayCommit;
         this.commits = commits;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority("USER"));
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }
