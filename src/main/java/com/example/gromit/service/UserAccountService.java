@@ -71,7 +71,6 @@ public class UserAccountService {
         user.setRefreshToken(newRefreshToken);
         userAccountRepository.save(user);
 
-
         return new SignUpResponseDto(user.getId(), newAccessToken, newRefreshToken);
 
     }

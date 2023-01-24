@@ -19,7 +19,6 @@ public class ExceptionAdvice {
     @ExceptionHandler(BaseException.class)
     public ResponseEntity onBaseException(BaseException exception){
         return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getResponseMessage(), exception.getData()), null, exception.getHttpStatus());
-
     }
 
     @ExceptionHandler(ValidationException.class)
