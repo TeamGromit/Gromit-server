@@ -78,6 +78,7 @@ public class UserCharacterService {
         while(i < userCharacters3.size()) {
             if(user.getId() == userCharacters3.get(i).getUserAccount().getId() &&
                     userCharacters3.get(i).getStatus().equals("1")) {
+
                 collectionRes.add(new GetCollectionrRes(userCharacters3.get(i).getCharacters().getId(),
                         userCharacters3.get(i).getCharacters().getCharacterImg(),
                         userCharacters3.get(i).getCharacters().getCharacterName(),
