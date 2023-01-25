@@ -1,7 +1,10 @@
 package com.example.gromit.base;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,9 +18,12 @@ import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
+@DynamicUpdate
+@DynamicInsert
 public class BaseEntity {
     @DateTimeFormat(iso=DateTimeFormat.ISO.DATE_TIME)
     @CreatedDate
@@ -35,4 +41,7 @@ public class BaseEntity {
 //    @LastModifiedBy
 //    @Column(nullable = false,length = 100)
 //    private String modifiedBy; // 수정자
+
+    @Column(nullable = false)
+    private boolean isDeleted;
 }
