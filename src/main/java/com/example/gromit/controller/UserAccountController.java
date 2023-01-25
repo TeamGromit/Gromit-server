@@ -46,9 +46,9 @@ public class UserAccountController {
         }
 
         // 회원 가입 비즈니스 로직
-        SignUpResponseDto signUpResponseDto = userAccountService.signUp(signUpRequestDto);
+        SignUpResponseDto result = userAccountService.signUp(signUpRequestDto);
 
-        return BaseResponse.onSuccess(signUpResponseDto);
+        return BaseResponse.onSuccess(result);
     }
 
     /**
@@ -59,13 +59,13 @@ public class UserAccountController {
                                                                        @PathVariable("nickname") String githubNickname) {
         log.info(githubNickname);
 
-        GithubNicknameResponseDto githubNicknameResponseDto = userAccountService.getGithubUser(githubNickname);
+        GithubNicknameResponseDto result = userAccountService.getGithubUser(githubNickname);
 
-        if (githubNicknameResponseDto == null) {
+        if (result == null) {
             return BaseResponse.onFailure(3001, "해당 깃허브 닉네임을 찾을 수 없습니다.", null);
         }
 
-        return BaseResponse.onSuccess(githubNicknameResponseDto);
+        return BaseResponse.onSuccess(result);
     }
 
     /**
@@ -80,7 +80,7 @@ public class UserAccountController {
         if (userAccountService.checkNickname(nickname)) {
             return BaseResponse.onFailure(3002, "이미 존재하는 닉네임입니다.", null);
         }
-
-        return BaseResponse.onSuccess(NicknameResponseDto.of(nickname));
+        NicknameResponseDto result = NicknameResponseDto.of(nickname);
+        return BaseResponse.onSuccess(result);
     }
 }

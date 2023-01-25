@@ -1,7 +1,10 @@
 package com.example.gromit.exception;
 
+import lombok.Getter;
+
 import java.util.Map;
 
+@Getter
 public class NotFoundException extends BaseException{
 
     private String message;
