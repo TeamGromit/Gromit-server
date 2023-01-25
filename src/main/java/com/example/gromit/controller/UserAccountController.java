@@ -5,9 +5,12 @@ import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
+import com.example.gromit.entity.UserAccount;
 import com.example.gromit.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -83,4 +86,11 @@ public class UserAccountController {
         NicknameResponseDto result = NicknameResponseDto.of(nickname);
         return BaseResponse.onSuccess(result);
     }
+
+    @DeleteMapping
+    public BaseResponse<String> deleteUserAccount(@AuthenticationPrincipal UserAccount userAccount){
+        userAccountService.delete(userAccount);
+        return BaseResponse.onSuccess("회원 탈퇴 성공");
+    }
+
 }
