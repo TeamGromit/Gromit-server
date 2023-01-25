@@ -1,6 +1,8 @@
 package com.example.gromit.exception;
 
 
+import lombok.Getter;
+
 import java.util.Map;
 
 public class UnauthorizedException extends BaseException{

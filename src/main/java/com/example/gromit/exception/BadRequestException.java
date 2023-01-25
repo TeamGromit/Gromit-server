@@ -1,5 +1,7 @@
 package com.example.gromit.exception;
 
+import lombok.Getter;
+
 import java.util.Map;
 
 public class BadRequestException extends BaseException{
