@@ -4,6 +4,7 @@ import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 
+import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 
 import com.example.gromit.dto.user.response.SignUpResponseDto;
@@ -193,5 +194,13 @@ public class UserAccountService {
 
             userAccountRepository.save(userAccount); //if문 밖으로..?
         }
+    }
+
+    public void resetCommits(Long userId){
+        //유저가 해당 유저인지 판별해야 하나?
+        UserAccount userAccount = userAccountRepository.findById(userId).get();
+
+        userAccount.resetCommits(userId, 0);
+        userAccountRepository.save(userAccount);
     }
 }

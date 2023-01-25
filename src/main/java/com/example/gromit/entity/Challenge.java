@@ -1,16 +1,14 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,9 +36,9 @@ public class Challenge extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private Date startDate;
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private Date endDate;
 
     @Column(nullable = false)
     private int goal;
@@ -56,7 +54,8 @@ public class Challenge extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword) {
+    @Builder
+    public Challenge(UserAccount userAccount, String title, Date startDate, Date endDate, int goal, int recruits, boolean isPassword, String password, boolean isDeleted) {
         this.userAccount = userAccount;
         this.title = title;
         this.startDate = startDate;
@@ -64,5 +63,13 @@ public class Challenge extends BaseEntity {
         this.goal = goal;
         this.recruits = recruits;
         this.isPassword = isPassword;
+        this.password = password;
+        this.isDeleted = isDeleted;
+    }
+
+    public void deleteChallenge(Long challengeId, UserAccount userAccount, boolean isDeleted) {
+        this.id = challengeId;
+        this.userAccount = userAccount;
+        this.isDeleted = isDeleted;
     }
 }

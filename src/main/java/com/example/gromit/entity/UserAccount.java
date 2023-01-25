@@ -150,4 +150,9 @@ public class UserAccount extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
+    public void resetCommits(Long userId, int commits) {
+        this.id = userId;
+        this.commits = commits;
+    }
 }

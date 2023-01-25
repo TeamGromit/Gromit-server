@@ -1,10 +1,7 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,4 +31,10 @@ public class UserCharacter extends BaseEntity {
 
     private String status;
 
+    @Builder
+    public UserCharacter(UserAccount userAccount, Characters characters, String status) {
+        this.userAccount = userAccount;
+        this.characters = characters;
+        this.status = status;
+    }
 }

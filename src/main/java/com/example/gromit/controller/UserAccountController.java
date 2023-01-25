@@ -105,4 +105,20 @@ public class UserAccountController {
             return new BaseResponse<>(e.getHttpStatus().toString()); //수정 필요
         }
     }
+
+
+    //누적 커밋 초기화
+    @PatchMapping("/resetCommits") //커밋 새로고침
+    @ResponseBody
+    public BaseResponse<String> resetCommits(Long userId) {
+        try {
+            //Long userId = jwtProvider.getUserIdx(); //토큰으로 유저 정보 받아오기 - 수정 필요
+            //userId = 1L; //임시 값
+
+            userAccountService.resetCommits(userId);
+            return new BaseResponse<>("커밋 초기화에 성공하였습니다.");
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getHttpStatus().toString()); //수정 필요
+        }
+    }
 }
