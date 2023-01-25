@@ -27,7 +27,7 @@ public class UserCharacter extends BaseEntity {
     private UserAccount userAccount;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="characters_id")
+    @JoinColumn(name = "characters_id")
     private Characters characters;
 
     // 0 진행중 , 1 완료

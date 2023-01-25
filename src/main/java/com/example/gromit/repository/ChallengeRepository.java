@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.List;
 
 @RepositoryRestResource
-public interface ChallengeRepository extends JpaRepository<Challenge,Long> {
+public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
 

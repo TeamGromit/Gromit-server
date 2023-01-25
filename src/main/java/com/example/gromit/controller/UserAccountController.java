@@ -6,6 +6,7 @@ import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.exception.BaseException;
 import com.example.gromit.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,7 +91,17 @@ public class UserAccountController {
     @DeleteMapping
     public BaseResponse<String> deleteUserAccount(@AuthenticationPrincipal UserAccount userAccount){
         userAccountService.delete(userAccount);
-        return BaseResponse.onSuccess("회원 탈퇴 성공");
+        return BaseResponse.onSuccess("회원 탈퇴 성공했습니다.");
+    }
+
+    /**
+     * 깃허브 커밋 조회 API
+     */
+    @PatchMapping("/reload") //커밋 새로고침
+    public BaseResponse<String> reloadCommits(@AuthenticationPrincipal UserAccount userAccount) {
+        System.out.println("커밋 새로고침 컨트롤러");
+        userAccountService.reloadCommits(userAccount);
+        return BaseResponse.onSuccess("커밋 새로고침에 성공했습니다.");
     }
 
 }

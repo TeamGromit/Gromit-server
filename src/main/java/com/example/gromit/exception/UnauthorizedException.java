@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter
-public class UnauthorizedException extends BaseException{
+public class UnauthorizedException extends BaseException {
 
     private String message;
 

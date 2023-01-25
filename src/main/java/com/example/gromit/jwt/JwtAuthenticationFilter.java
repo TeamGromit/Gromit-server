@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
     private final JwtService jwtService;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager,JwtService jwtService) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
         super(authenticationManager);
         this.jwtService = jwtService;
     }
@@ -36,25 +36,26 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String token = jwtService.getToken((HttpServletRequest) request);
 
         // 토큰이 존재한다면
-        if(token!=null){
+        if (token != null) {
 
             // 토큰을 검증
-            if(jwtService.validateToken(token)){
+            if (jwtService.validateToken(token)) {
 
                 //권한
                 Authentication authentication = jwtService.getAuthentication(token);
 
                 // security 세션에 등록
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            }else{
+            } else {
                 throw new UnauthorizedException("유효하지 않은 토큰입니다.");
             }
 
-        }else{
-            throw new BadRequestException("토큰 값이 필요 합니다.");
         }
+//        else{
+//            throw new BadRequestException("토큰 값이 필요 합니다.");
+//        }
 
-        chain.doFilter(request,response);
+        chain.doFilter(request, response);
     }
 
 //    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

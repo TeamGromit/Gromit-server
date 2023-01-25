@@ -26,13 +26,13 @@ public class Challenge extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="user_account_id")
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
     @OneToMany(mappedBy = "challenge")
     private List<Member> members = new LinkedList<>();
 
-    @Column(nullable = false,length =50)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)

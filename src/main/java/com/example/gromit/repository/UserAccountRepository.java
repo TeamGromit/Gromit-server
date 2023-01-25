@@ -7,9 +7,11 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import java.util.Optional;
 
 @RepositoryRestResource
-public interface UserAccountRepository extends JpaRepository<UserAccount,Long> {
+public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
 
     Boolean existsByNickname(String nickname);
+
     Optional<UserAccount> findByEmailAndProviderAndIsDeleted(String email, String provider, boolean isDeleted);
+
     Optional<UserAccount> findByNicknameAndIsDeleted(String nickname, boolean isDeleted);
 }
