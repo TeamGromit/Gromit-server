@@ -22,23 +22,22 @@ import java.io.IOException;
 public class JwtExceptionFilter extends OncePerRequestFilter {
 
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response
             , FilterChain filterChain) throws ServletException, IOException {
 
         try {
             // 토큰 값이 존재하지 않을 때
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
 
-        }catch (UnauthorizedException | BadRequestException e){
+        } catch (UnauthorizedException | BadRequestException e) {
 
             ObjectMapper objectMapper = new ObjectMapper();
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             objectMapper.writeValue(response.getWriter(),
-                    BaseResponse.onFailure(e.getErrorCode().getCode(),e.getMessage(),null));
+                    BaseResponse.onFailure(e.getErrorCode().getCode(), e.getMessage(), null));
         }
     }
 }

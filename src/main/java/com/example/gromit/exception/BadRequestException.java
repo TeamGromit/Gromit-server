@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Map;
 
 @Getter
-public class BadRequestException extends BaseException{
+public class BadRequestException extends BaseException {
 
     private String message;
 

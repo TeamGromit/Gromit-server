@@ -10,7 +10,7 @@ public class NotFoundException extends BaseException{
     private String message;
 
     public NotFoundException(String message){
-        super(ErrorCode._BAD_REQUEST);
+        super(ErrorCode._BAD_REQUEST,message);
         this.message = message;
     }
 
