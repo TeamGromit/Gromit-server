@@ -4,10 +4,7 @@ import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
-import com.example.gromit.entity.Challenge;
-import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
-import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.exception.BaseException;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
@@ -18,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +27,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Arrays;
 
 import static com.example.gromit.exception.ErrorCode.*;
 
@@ -176,5 +177,60 @@ public class UserAccountService {
 
         userAccount.setDeleted(true);
         userAccountRepository.save(userAccount);
+    }
+
+    /**
+     * 깃허브 커밋 내역 조회 및 갱신
+     */
+    @Transactional
+    public void reloadCommits(UserAccount user) {
+
+        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
+
+        String now = LocalDate.now().toString();
+        String gitHubName = userAccount.getGithubName();
+        int oldTodayCommit = userAccount.getTodayCommit();
+        int totalCommit = userAccount.getCommits();
+        int todayCommit = 0;
+
+        String url = "https://github.com/users/" + gitHubName + "/contributions";
+
+        try {
+            Document rawData = Jsoup.connect(url).get();
+            Elements articles = rawData.getElementsByClass("ContributionCalendar-day");
+
+            String contributionText = articles.stream()
+                    .filter(article -> article.attr("data-date").equals(now))
+                    .map(article -> article.ownText())
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException("현재 날짜가 갱신되지 않았습니다."));
+
+            String commitText = Arrays.stream(contributionText.split(" "))
+                    .findFirst()
+                    .get();
+
+            if (isTodayCommitZero(commitText)) {
+                todayCommit = 0;
+            }
+            if (!isTodayCommitZero(commitText)) {
+                todayCommit = Integer.parseInt(commitText);
+
+            }
+//            System.out.println("todayCommit = " + todayCommit);
+
+        } catch (NotFoundException e) {
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            throw new IllegalArgumentException("크롤링 서버 에러 ");
+        }
+        if (oldTodayCommit != todayCommit) {
+            int newCommits = totalCommit + todayCommit - oldTodayCommit;
+            userAccount.reloadCommits(todayCommit, newCommits);
+            userAccountRepository.save(userAccount);
+        }
+    }
+
+    private static boolean isTodayCommitZero(String commitText) {
+        return commitText.isBlank() || commitText.equals("No");
     }
 }
