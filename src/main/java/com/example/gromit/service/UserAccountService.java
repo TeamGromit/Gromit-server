@@ -223,6 +223,11 @@ public class UserAccountService {
         } catch (IOException e) {
             throw new IllegalArgumentException("크롤링 서버 에러 ");
         }
+
+        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit);
+    }
+
+    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit) {
         if (oldTodayCommit != todayCommit) {
             int newCommits = totalCommit + todayCommit - oldTodayCommit;
             userAccount.reloadCommits(todayCommit, newCommits);
