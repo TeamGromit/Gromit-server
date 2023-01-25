@@ -183,11 +183,11 @@ public class UserAccountService {
      * 깃허브 커밋 내역 조회 및 갱신
      */
     @Transactional
-    public void reloadCommits(UserAccount user) {
+    public void reloadCommits(UserAccount user,LocalDate time) {
 
         UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
 
-        String now = LocalDate.now().toString();
+        String now = time.toString();
         String gitHubName = userAccount.getGithubName();
         int oldTodayCommit = userAccount.getTodayCommit();
         int totalCommit = userAccount.getCommits();
