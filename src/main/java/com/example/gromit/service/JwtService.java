@@ -80,7 +80,9 @@ public class JwtService {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(
                             StandardCharsets.UTF_8))).parseClaimsJws(token);
-            if (claims.getBody().getExpiration().before(new Date())) throw new UnauthorizedException(EXPIRED_TOKEN);
+            if (claims.getBody().getExpiration().before(new Date())) {
+                throw new UnauthorizedException(EXPIRED_TOKEN);
+            }
             return true;
         } catch (Exception e) {
             return false;

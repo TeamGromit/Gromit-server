@@ -29,12 +29,11 @@ public class Characters extends BaseEntity {
     @Column(nullable = false)
     private int goal;
 
-    @Column(nullable = false,length = 50)
+    @Column(nullable = false, length = 50)
     private String characterName;
 
     @Column(nullable = false)
     private String characterImg;
-
 
 
 }

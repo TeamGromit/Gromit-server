@@ -1,10 +1,7 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -19,6 +16,7 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
 public class Challenge extends BaseEntity {
@@ -28,13 +26,13 @@ public class Challenge extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="user_account_id")
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
     @OneToMany(mappedBy = "challenge")
     private List<Member> members = new LinkedList<>();
 
-    @Column(nullable = false,length =50)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)

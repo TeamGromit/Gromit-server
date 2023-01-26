@@ -171,4 +171,14 @@ public class LoginService {
     }
 
 
+    public LoginResponseDto updateUserToken(UserAccount userAccount) {
+        String newRefreshToken = jwtService.encodeJwtRefreshToken(userAccount.getId());
+        String newAccessToken = jwtService.encodeJwtToken(new TokenDto(userAccount.getId()));
+
+        userAccount.setRefreshToken(newRefreshToken);
+        userAccountRepository.save(userAccount);
+
+        return new LoginResponseDto(newAccessToken, newRefreshToken);
+
+    }
 }
