@@ -23,7 +23,12 @@ public class HomeController {
     @ResponseBody
     @PostMapping("/home")
     public BaseResponse<PostUserCharacterRes> getUserCharacter(@AuthenticationPrincipal UserAccount user) { //캐릭터정보조회api
-        return BaseResponse.onSuccess(userCharacterService.getUserCharacter(user));
+        PostUserCharacterRes result = userCharacterService.getUserCharacter(user);
+
+        if(result == null)
+            return BaseResponse.onFailure(204, "캐릭터가 없습니다.", null);
+
+        return BaseResponse.onSuccess(result);
     }
 
     @ResponseBody
@@ -36,7 +41,11 @@ public class HomeController {
     @ResponseBody
     @GetMapping("/collections")
     public BaseResponse<List<GetCollectionrRes>> collection (@AuthenticationPrincipal UserAccount user) { //컬렉션조회api
+        List<GetCollectionrRes> results = userCharacterService.getCollection(user);
 
-        return BaseResponse.onSuccess(userCharacterService.getCollection(user));
+        if (results == null)
+            return BaseResponse.onFailure(204, "캐릭터가 없습니다.", null);
+        else
+            return BaseResponse.onSuccess(results);
     }
 }

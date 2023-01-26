@@ -7,7 +7,6 @@ import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.repository.CharacterRepository;
 import com.example.gromit.repository.UserCharacterRepository;
-import com.example.gromit.repository.UserCharacterSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +19,12 @@ public class UserCharacterService {
 
     private final UserCharacterRepository userCharacterRepository;
     private final CharacterRepository characterRepository;
-    private final UserCharacterSpecification userCharacterSpecification;
     public PostUserCharacterRes init(UserAccount user) {
 
         String status = "0";
 
         Characters egg = characterRepository.findById(Long.valueOf(1)).orElseThrow();
-        UserCharacter userCharacter = new UserCharacter(null, user, egg, status);
+        UserCharacter userCharacter = new UserCharacter(null, user, egg, status, false);
 
         UserCharacter userCharacter1 = userCharacterRepository.save(userCharacter);
 
@@ -48,7 +46,7 @@ public class UserCharacterService {
         UserCharacter userCharacter2 = null;
         int i = 0;
 
-        while(true) {
+        while(i < userCharacters.size()) {
             if(user.getId() == userCharacters.get(i).getUserAccount().getId() &&
             userCharacters.get(i).getStatus().equals("0")) {
                 userCharacter2 = userCharacters.get(i);
@@ -57,16 +55,19 @@ public class UserCharacterService {
             i++;
         }
 
-        return PostUserCharacterRes.builder()
-                .userid(userCharacter2.getUserAccount().getId())
-                .chid(userCharacter2.getCharacters().getId())
-                .todayCommit(userCharacter2.getUserAccount().getTodayCommit())
-                .chImg(userCharacter2.getCharacters().getCharacterImg())
-                .level(userCharacter2.getCharacters().getLevel())
-                .nickname(userCharacter2.getUserAccount().getNickname())
-                .goal(userCharacter2.getCharacters().getGoal())
-                .commits(userCharacter2.getUserAccount().getCommits())
-                .build();
+        if (i == userCharacters.size()) return null;
+        else {
+            return PostUserCharacterRes.builder()
+                    .userid(userCharacter2.getUserAccount().getId())
+                    .chid(userCharacter2.getCharacters().getId())
+                    .todayCommit(userCharacter2.getUserAccount().getTodayCommit())
+                    .chImg(userCharacter2.getCharacters().getCharacterImg())
+                    .level(userCharacter2.getCharacters().getLevel())
+                    .nickname(userCharacter2.getUserAccount().getNickname())
+                    .goal(userCharacter2.getCharacters().getGoal())
+                    .commits(userCharacter2.getUserAccount().getCommits())
+                    .build();
+        }
     }
 
     public List<GetCollectionrRes> getCollection(UserAccount user) {
@@ -76,7 +77,7 @@ public class UserCharacterService {
         int i = 0;
 
         while(i < userCharacters3.size()) {
-            if(user.getId() == userCharacters3.get(i).getUserAccount().getId() &&
+            if((user.getId() == userCharacters3.get(i).getUserAccount().getId()) &&
                     userCharacters3.get(i).getStatus().equals("1")) {
 
                 collectionRes.add(new GetCollectionrRes(userCharacters3.get(i).getCharacters().getId(),
@@ -87,6 +88,8 @@ public class UserCharacterService {
             i++;
         }
 
+        if(collectionRes.size() == 0)
+            return null;
         return collectionRes;
     }
 
