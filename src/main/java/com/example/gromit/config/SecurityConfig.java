@@ -23,8 +23,10 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtService jwtService;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+
+//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
 
 
     @Override
@@ -36,13 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 세션을 사용하지 않기 때문에 STATELESS 로 설정
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(),jwtService))
                 .authorizeRequests()
                 .antMatchers("/login/apple").permitAll()
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
     }
 

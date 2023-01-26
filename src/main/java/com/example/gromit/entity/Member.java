@@ -14,6 +14,7 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
 public class Member extends BaseEntity {

@@ -15,30 +15,74 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.transaction.Transactional;
+import java.util.List;
+
 @SpringBootTest
 class GromitApplicationTests {
 
-//	@Autowired
-//	private UserAccountRepository userAccountRepository;
+	@Autowired
+	private UserAccountRepository userAccountRepository;
+
 //
 //	private CustomUserDetailService customUserDetailService = new CustomUserDetailService(userAccountRepository);
 //	private JwtService jwtService = new JwtService(customUserDetailService);
+//
+//	@Autowired
+//	private JwtService jwtService;
+//
+//	@GetMapping
+//	public @ResponseBody String test(@AuthenticationPrincipal UserAccount userAccount) {
+//		Long userId = userAccount.getId();
+//
+//		System.out.println(userId);
+//
+//		return "test";
+//	}
+//
+//	@Test
+//	void testJpa() {
+//		String token = jwtService.encodeJwtToken(new TokenDto(6L));
+//		System.out.println(token);
+//
+//		List<UserCharacter> userCharacters = userAccount.getUserCharacters();
+//	}
 
-	@Autowired
-	private JwtService jwtService;
 
-	@GetMapping
-	public @ResponseBody String test(@AuthenticationPrincipal UserAccount userAccount) {
-		Long userId = userAccount.getId();
+//	@Test
+//	@Transactional
+//	void testJpa2() {
+//		UserAccount userAccount = userAccountRepository.findById(6L).get();
+//		System.out.println("userAccount = " + userAccount.toString());
+//
+//		List<UserCharacter> userCharacters = userAccount.getUserCharacters().;
+//
+//		System.out.println("userCharacters = " + userCharacters);
+//
+//		for (UserCharacter character: userCharacters) {
+//			System.out.println(character.toString());
+//		}
+//	}
 
-		System.out.println(userId);
-
-		return "test";
-	}
-
-	@Test
-	void testJpa() {
-		String token = jwtService.encodeJwtToken(new TokenDto(6L));
-		System.out.println(token);
-	}
+//	@Test
+//	void testJpa3() {
+//		UserAccount userAccount = userAccountRepository.findById(6L).get();
+//
+//		Customer james = customers.stream()
+//				.filter(customer -> "James".equals(customer.getName()))
+//				.findAny()
+//				.orElse(null);
+//
+//
+//
+//		select level from characters join user_character on characters.id = user_character.characters_id
+//		where user_account_id = :user_account_id and status = 0;
+//
+//
+//		System.out.println(userCharacters.toString());
+//
+////		for (UserCharacter character: userCharacters) {
+////			System.out.println(character.toString());
+////		}
+//	}
 }

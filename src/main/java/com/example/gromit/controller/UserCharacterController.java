@@ -38,46 +38,17 @@ public class UserCharacterController {
     private final UserCharacterRepository userCharacterRepository;
     private final UserAccountController userAccountController;
 
-//    @ResponseBody
-//    @PatchMapping("/update")
-//    public BaseResponse<String> updateUserCharacter() {
-//        try {
-//            //Long userId = jwtProvider.getUserIdx();
-//            Long userId = 2L;
-//
-//            getAllChallenges()
-//            //userCharacterService.update(userId);
-//            return new BaseResponse<>("캐릭터 변경에 성공하였습니다.");
-//        } catch (BaseException e) {
-//            return new BaseResponse<>(e.getHttpStatus().toString());
-//        }
-//    }
-
-    @ResponseBody
-    @PatchMapping("/testttt")
-    public BaseResponse<Integer> updateStatus() {
-        Long userId = 1L;
-
-        int result = userCharacterRepository.updateStatus(userId);
-
-        //BaseResponse<String> result2 = userAccountController.resetCommits();
-        userAccountController.resetCommits(userId);
-
-        return BaseResponse.onSuccess(result);
-    }
-
-
     @ResponseBody
     @PatchMapping("/evolution")
     public BaseResponse<UserCharacter> change(@AuthenticationPrincipal UserAccount userAccount) {
         Long userId = userAccount.getId();
 
-        System.out.println("userId = " + userId.toString());
-
         Integer level = userCharacterRepository.change(userId);
         System.out.println("level = " + level.toString());
+
+        int goal = userCharacterRepository.searchGoal(userId);
+        userCharacterRepository.resetCommits(userId, goal);
         userCharacterRepository.updateStatus(userId);
-        userAccountController.resetCommits(userId);
         UserCharacter userCharacter = userCharacterService.change(level, userId);
         return new BaseResponse(userCharacter);
     }

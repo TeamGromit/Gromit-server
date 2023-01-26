@@ -2,6 +2,7 @@ package com.example.gromit.repository;
 
 import com.example.gromit.entity.UserCharacter;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,5 +25,15 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter,Lon
     @Transactional
     @Modifying(clearAutomatically = true)
     @Query(value = "UPDATE user_character SET status = 1 WHERE user_account_id= :userId and status = 0;", nativeQuery = true)
-    int updateStatus(@Param("userId") Long username);
+    Integer updateStatus(@Param("userId") Long userId);
+
+    @Query(value = "select goal from characters join user_character on characters.id = user_character.characters_id where user_account_id = :userId and status = 0;", nativeQuery = true)
+    Integer searchGoal(@Param("userId") Long userId);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query(value = "UPDATE user_account SET commits = commits - :ch_goal WHERE id = :userId ;", nativeQuery = true)
+    Integer resetCommits(@Param("userId") Long userId, @Param("ch_goal") int ch_goal);
+
+    List<UserCharacter> findAllByUserAccountIdAndIsDeleted(Long userAccountId, Boolean isDeleted);
 }

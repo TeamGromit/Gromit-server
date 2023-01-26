@@ -32,7 +32,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false,length = 50)
+    @Column(nullable = false, length = 50)
     private String nickname;
 
 
@@ -46,7 +46,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
     private List<Member> members = new LinkedList<>();
 
 
-    @Column(nullable = false,length = 255)
+    @Column(nullable = false, length = 255)
     private String githubName;
 
 
@@ -69,7 +69,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
     private String provider;
 
     @Email
-    @Column(nullable = false,length = 255)
+    @Column(nullable = false, length = 255)
     private String email;
     @Nullable
     private String refreshToken;
@@ -85,7 +85,7 @@ public class UserAccount extends BaseEntity implements UserDetails {
         this.email = email;
     }
 
-    public static UserAccount of(String nickname, String githubName, int commits, int todayCommit , String provider, String email,boolean isDeleted, boolean isAlarm) {
+    public static UserAccount of(String nickname, String githubName, int commits, int todayCommit, String provider, String email, boolean isDeleted, boolean isAlarm) {
         return new UserAccount(nickname, githubName, commits, todayCommit, isDeleted, isAlarm, provider, email);
     }
 
@@ -105,15 +105,10 @@ public class UserAccount extends BaseEntity implements UserDetails {
         return id.equals(that.id);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    //추가
-    public void reloadCommits(int todayCommit, int commits){
-        this.todayCommit = todayCommit;
-        this.commits = commits;
     }
 
     @Override
@@ -153,6 +148,12 @@ public class UserAccount extends BaseEntity implements UserDetails {
 
     public void resetCommits(Long userId, int commits) {
         this.id = userId;
+        this.commits = commits;
+    }
+
+    //추가
+    public void reloadCommits(int todayCommit, int commits){
+        this.todayCommit = todayCommit;
         this.commits = commits;
     }
 }

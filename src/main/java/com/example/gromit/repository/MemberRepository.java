@@ -9,4 +9,6 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface MemberRepository extends JpaRepository<Member,Long> {
+    List<Member> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
+
 }
