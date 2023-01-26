@@ -2,7 +2,6 @@ package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.challenge.*;
-import com.example.gromit.dto.usercharacter.response.UserCharacterRes;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.exception.BaseException;
