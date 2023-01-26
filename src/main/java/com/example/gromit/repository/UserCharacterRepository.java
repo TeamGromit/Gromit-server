@@ -18,7 +18,7 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter,Lon
 //    Integer getLevel(@Param("user_account_id") Long user_account_id);
 
     @Query(value = "select * from user_character where user_account_id = :userId and status = 0;", nativeQuery = true)
-    UserCharacter findCurrentCharacter(@Param("userId") Long userId); //status 0인것 찾기..?
+    UserCharacter findCurrentCharacter(@Param("userId") Long userId);
 
     @Query(value = "select * from user_character where user_account_id = :userId", nativeQuery = true)
     List<UserCharacterRepository.UserCharacterList> getUserCharacterList(@Param("userId") Long userId);
