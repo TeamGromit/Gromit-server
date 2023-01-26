@@ -23,6 +23,8 @@ public class SchedulerService {
 
         userAccounts.stream().forEach(userAccount -> {
             userAccountService.reloadCommits(userAccount, LocalDate.now().minusDays(1));
+            userAccountService.resetTodayCommits(userAccount);
+
         });
     }
 }

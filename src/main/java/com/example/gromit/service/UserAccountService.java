@@ -238,4 +238,13 @@ public class UserAccountService {
     private static boolean isTodayCommitZero(String commitText) {
         return commitText.isBlank() || commitText.equals("No");
     }
+
+    /**
+     * 오늘의 커밋 0 으로 초기화
+     */
+    public void resetTodayCommits(UserAccount user) {
+        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
+        userAccount.setTodayCommit(0);
+        userAccountRepository.save(userAccount);
+    }
 }
