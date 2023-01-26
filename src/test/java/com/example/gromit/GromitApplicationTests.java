@@ -5,6 +5,7 @@ import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.repository.UserAccountRepository;
+import com.example.gromit.repository.UserCharacterRepository;
 import com.example.gromit.service.CustomUserDetailService;
 import com.example.gromit.service.JwtService;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ class GromitApplicationTests {
 
 	@Autowired
 	private UserAccountRepository userAccountRepository;
+
+	@Autowired
+	private UserCharacterRepository userCharacterRepository;
 
 //
 //	private CustomUserDetailService customUserDetailService = new CustomUserDetailService(userAccountRepository);
@@ -85,4 +89,16 @@ class GromitApplicationTests {
 ////			System.out.println(character.toString());
 ////		}
 //	}
+
+	@Test
+	void testJpa3() {
+		//int level = userCharacterRepository.getLevel(6L);
+
+		UserCharacter userCharacter = userCharacterRepository.findCurrentCharacter(6L);
+
+		System.out.println(userCharacter.toString());
+
+		int level = userCharacter.getCharacters().getLevel();
+		System.out.println(level);
+	}
 }

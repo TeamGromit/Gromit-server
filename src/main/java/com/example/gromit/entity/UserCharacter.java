@@ -30,15 +30,15 @@ public class UserCharacter extends BaseEntity {
     @JoinColumn(name = "characters_id")
     private Characters characters;
 
-    // 0 진행중 , 1 완료
+    //0: 현재 홈 화면에 배치중인 캐릭터, 1: 진화를 시켰고(획득했고) 현재 홈 화면에는 배치되고 있지 않은 캐릭터
     @Column(nullable = false)
-    private String status;
+    private int status;
 
     @Column(nullable = false)
     private boolean isDeleted;
 
     @Builder
-    public UserCharacter(UserAccount userAccount, Characters characters, String status) {
+    public UserCharacter(UserAccount userAccount, Characters characters, int status) {
         this.userAccount = userAccount;
         this.characters = characters;
         this.status = status;

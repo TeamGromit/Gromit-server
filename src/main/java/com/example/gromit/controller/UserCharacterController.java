@@ -2,6 +2,7 @@ package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.challenge.*;
+import com.example.gromit.dto.usercharacter.response.UserCharacterRes;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.exception.BaseException;
@@ -40,25 +41,10 @@ public class UserCharacterController {
 
     @ResponseBody
     @PatchMapping("/evolution")
-    public BaseResponse<UserCharacter> change(@AuthenticationPrincipal UserAccount userAccount) {
+    public BaseResponse<UserCharacter> changeCharacter(@AuthenticationPrincipal UserAccount userAccount) {
         Long userId = userAccount.getId();
 
-        Integer level = userCharacterRepository.change(userId);
-        System.out.println("level = " + level.toString());
-
-        int goal = userCharacterRepository.searchGoal(userId);
-        userCharacterRepository.resetCommits(userId, goal);
-        userCharacterRepository.updateStatus(userId);
-        UserCharacter userCharacter = userCharacterService.change(level, userId);
+        UserCharacter userCharacter = userCharacterService.changeCharacter(userId);
         return new BaseResponse(userCharacter);
-    }
-
-    @GetMapping("/ccc")
-    public @ResponseBody String test(@AuthenticationPrincipal UserAccount userAccount) {
-        Long userId = userAccount.getId();
-
-        System.out.println(userId);
-
-        return userId.toString();
     }
 }

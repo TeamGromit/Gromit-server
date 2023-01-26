@@ -14,26 +14,20 @@ import java.util.List;
 
 @RepositoryRestResource
 public interface UserCharacterRepository extends JpaRepository<UserCharacter,Long>  {
+//    @Query(value = "select level from characters join user_character on characters.id = user_character.characters_id where user_account_id = :user_account_id and status = 0;", nativeQuery = true)
+//    Integer getLevel(@Param("user_account_id") Long user_account_id);
 
-    //업데이트문으로 바꾸기~ 기존 코드는 다시 쓸 수 있으니까 백업해두기
-    //@Query(value = "SELECT * FROM user_character WHERE user_account_id= :userId and status = 0;", nativeQuery = true)
-    //List<UserCharacter> getAllChallenges(@Param("userId") Long username);
+    @Query(value = "select * from user_character where user_account_id = :userId and status = 0;", nativeQuery = true)
+    UserCharacter findCurrentCharacter(@Param("userId") Long userId); //status 0인것 찾기..?
 
-    @Query(value = "select level from characters join user_character on characters.id = user_character.characters_id where user_account_id = :user_account_id and status = 0;", nativeQuery = true)
-    Integer change(@Param("user_account_id") Long user_account_id);
+    @Query(value = "select * from user_character where user_account_id = :userId", nativeQuery = true)
+    List<UserCharacterRepository.UserCharacterList> getUserCharacterList(@Param("userId") Long userId);
 
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE user_character SET status = 1 WHERE user_account_id= :userId and status = 0;", nativeQuery = true)
-    Integer updateStatus(@Param("userId") Long userId);
-
-    @Query(value = "select goal from characters join user_character on characters.id = user_character.characters_id where user_account_id = :userId and status = 0;", nativeQuery = true)
-    Integer searchGoal(@Param("userId") Long userId);
-
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(value = "UPDATE user_account SET commits = commits - :ch_goal WHERE id = :userId ;", nativeQuery = true)
-    Integer resetCommits(@Param("userId") Long userId, @Param("ch_goal") int ch_goal);
+    interface UserCharacterList {
+        Long getUser_account_id();
+        Long getCharacters_id();
+        Integer getStatus();
+    }
 
     List<UserCharacter> findAllByUserAccountIdAndIsDeleted(Long userAccountId, Boolean isDeleted);
 }

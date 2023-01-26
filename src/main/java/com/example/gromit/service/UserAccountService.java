@@ -211,14 +211,16 @@ public class UserAccountService {
         }
     }
 
-//    public void resetCommits(Long userId){
-//        //유저가 해당 유저인지 판별해야 하나?
-//        UserAccount userAccount = userAccountRepository.findById(userId).get();
-//        int commits = userAccount.getCommits();
-//
-//        userAccount.resetCommits(userId, 0);
-//        userAccountRepository.save(userAccount);
-//    }
+    public void resetCommits(Long userId, int goal){
+        UserAccount userAccount = userAccountRepository.findById(userId).get();
+        int oldCommits = userAccount.getCommits();
+
+        if (oldCommits >= goal) { //아님 예외처리
+            userAccount.resetCommits(userId, oldCommits - goal);
+            userAccountRepository.save(userAccount);
+        }
+    }
+
     @Transactional
     public void delete(UserAccount userAccount) {
         userAccountRepository.findById(userAccount.getId())
