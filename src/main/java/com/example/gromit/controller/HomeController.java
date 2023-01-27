@@ -53,7 +53,7 @@ public class HomeController {
         userAccountService.reloadCommits(userAccount, LocalDate.now());
 
         // 진화
-        ShowHomeResponse result = userCharacterService.qreloadCharacter(userAccount);
+        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount);
 
         return BaseResponse.onSuccess(result);
     }
