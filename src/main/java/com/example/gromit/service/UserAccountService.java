@@ -247,4 +247,15 @@ public class UserAccountService {
         userAccount.setTodayCommit(0);
         userAccountRepository.save(userAccount);
     }
+
+    /**
+     * 진화 했을 때 누적 커밋 갱신
+     */
+    public int renewCommits(UserAccount userAccount, int goal){
+        int totalCommit = userAccount.getCommits();
+        int newCommits=totalCommit-goal;
+        userAccount.setCommits(newCommits);
+        userAccountRepository.save(userAccount);
+        return newCommits;
+    }
 }
