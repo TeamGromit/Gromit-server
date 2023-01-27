@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Setter
 @ToString
 @Entity
+@Builder
 public class UserCharacter extends BaseEntity {
 
     @Id
@@ -32,9 +33,21 @@ public class UserCharacter extends BaseEntity {
 
     // 0 진행중 , 1 완료
     @Column(nullable = false)
-    private String status;
+    private int status;
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    private UserCharacter(UserAccount userAccount, Characters characters, int status, boolean isDeleted) {
+        this.userAccount = userAccount;
+        this.characters = characters;
+        this.status = status;
+        this.isDeleted = isDeleted;
+    }
+
+    public static UserCharacter of(UserAccount userAccount, Characters characters, int status, boolean isDeleted) {
+        return new UserCharacter(userAccount, characters, status, isDeleted);
+    }
+
 
 }

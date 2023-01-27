@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import java.time.LocalDate;
+
 import static com.example.gromit.base.BaseResponseStatus.*;
 
 @Slf4j
@@ -100,7 +102,7 @@ public class UserAccountController {
     @PatchMapping("/reload") //커밋 새로고침
     public BaseResponse<String> reloadCommits(@AuthenticationPrincipal UserAccount userAccount) {
         System.out.println("커밋 새로고침 컨트롤러");
-        userAccountService.reloadCommits(userAccount);
+        userAccountService.reloadCommits(userAccount, LocalDate.now());
         return BaseResponse.onSuccess("커밋 새로고침에 성공했습니다.");
     }
 

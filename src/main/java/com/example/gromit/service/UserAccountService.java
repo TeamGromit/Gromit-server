@@ -183,11 +183,11 @@ public class UserAccountService {
      * 깃허브 커밋 내역 조회 및 갱신
      */
     @Transactional
-    public void reloadCommits(UserAccount user) {
+    public void reloadCommits(UserAccount user,LocalDate time) {
 
         UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
 
-        String now = LocalDate.now().toString();
+        String now = time.toString();
         String gitHubName = userAccount.getGithubName();
         int oldTodayCommit = userAccount.getTodayCommit();
         int totalCommit = userAccount.getCommits();
@@ -237,5 +237,25 @@ public class UserAccountService {
 
     private static boolean isTodayCommitZero(String commitText) {
         return commitText.isBlank() || commitText.equals("No");
+    }
+
+    /**
+     * 오늘의 커밋 0 으로 초기화
+     */
+    public void resetTodayCommits(UserAccount user) {
+        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
+        userAccount.setTodayCommit(0);
+        userAccountRepository.save(userAccount);
+    }
+
+    /**
+     * 진화 했을 때 누적 커밋 갱신
+     */
+    public int renewCommits(UserAccount userAccount, int goal){
+        int totalCommit = userAccount.getCommits();
+        int newCommits=totalCommit-goal;
+        userAccount.setCommits(newCommits);
+        userAccountRepository.save(userAccount);
+        return newCommits;
     }
 }

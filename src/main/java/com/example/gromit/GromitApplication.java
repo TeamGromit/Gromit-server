@@ -1,10 +1,9 @@
 package com.example.gromit;
 
-import com.example.gromit.repository.UserAccountRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
+//@EnableScheduling
 @SpringBootApplication
 public class GromitApplication {
 
