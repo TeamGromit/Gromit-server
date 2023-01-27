@@ -103,6 +103,8 @@ public class UserAccount extends BaseEntity implements UserDetails {
         this.commits = commits;
     }
 
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -153,7 +153,7 @@ public class LoginService {
 //        이메일, 타입으로 유저 조회
 //        가입되지 않은 유저 일 경우 에러와 함께 이메일 반환
         UserAccount user = userAccountRepository.findByEmailAndProviderAndIsDeleted(email, "APPLE", false)
-                .orElseThrow(() -> new BaseException(USER_NOT_FOUND, Map.of("email", email)));
+                .orElseThrow(() -> new BaseException(USER_NOT_FOUND, Map.of("email", email,"provider","APPLE")));
 
 //        가입된 유저 확인 시 jwt, refreshToken 반환
         String newAccessToken = jwtService.encodeJwtToken(new TokenDto(user.getId()));

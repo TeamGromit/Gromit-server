@@ -6,12 +6,11 @@ import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.UserAccount;
-import com.example.gromit.exception.BaseException;
+import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.service.UserAccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +22,8 @@ import javax.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 
-import static com.example.gromit.base.BaseResponseStatus.*;
+import static com.example.gromit.exception.ErrorCode.*;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,12 +43,12 @@ public class UserAccountController {
      * @return
      */
     @PostMapping
-    public BaseResponse<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto, @Valid BindingResult bindingResult) {
+    public BaseResponse<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
         log.info("sign-up");
 
         if (bindingResult.hasErrors()) {
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
-            return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
+            return BaseResponse.onFailure(CONTROLLER_COMMON_ERROR_CODE.getCode(), objectError.getDefaultMessage(), null);
         }
 
         // 회원 가입 비즈니스 로직
@@ -64,13 +64,7 @@ public class UserAccountController {
     public BaseResponse<GithubNicknameResponseDto> checkGithubNickname(@NotBlank(message = "깃허브 닉네임을 입력해주세요.")
                                                                        @PathVariable("nickname") String githubNickname) {
         log.info(githubNickname);
-
         GithubNicknameResponseDto result = userAccountService.getGithubUser(githubNickname);
-
-        if (result == null) {
-            return BaseResponse.onFailure(3001, "해당 깃허브 닉네임을 찾을 수 없습니다.", null);
-        }
-
         return BaseResponse.onSuccess(result);
     }
 
@@ -84,14 +78,14 @@ public class UserAccountController {
         log.info(nickname);
 
         if (userAccountService.checkNickname(nickname)) {
-            return BaseResponse.onFailure(3002, "이미 존재하는 닉네임입니다.", null);
+            return BaseResponse.onFailure(DUPLICATED_NICKNAME.getCode(), DUPLICATED_NICKNAME.getMessage(), null);
         }
         NicknameResponseDto result = NicknameResponseDto.of(nickname);
         return BaseResponse.onSuccess(result);
     }
 
     @DeleteMapping
-    public BaseResponse<String> deleteUserAccount(@AuthenticationPrincipal UserAccount userAccount){
+    public BaseResponse<String> deleteUserAccount(@AuthenticationPrincipal UserAccount userAccount) {
         userAccountService.delete(userAccount);
         return BaseResponse.onSuccess("회원 탈퇴 성공했습니다.");
     }
