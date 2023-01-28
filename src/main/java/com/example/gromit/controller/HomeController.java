@@ -27,7 +27,9 @@ public class HomeController {
     private final UserCharacterService userCharacterService;
 
     /**
-     * 처음 Home 으로 넘어올 때 API
+     * Home 으로 넘어올 때 API
+     * @param userAccount
+     * @return
      */
     @GetMapping
     public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount){
@@ -35,9 +37,9 @@ public class HomeController {
         // 커밋 갱신
         userAccountService.reloadCommits(userAccount, LocalDate.now());
 
-        // 캐릭터 선택
+        // Home 에 필요한 정보들 가져옴
+        ShowHomeResponse result=userCharacterService.getHomeProfile(userAccount);
 
-        ShowHomeResponse result=null;
         return BaseResponse.onSuccess(result);
     }
 

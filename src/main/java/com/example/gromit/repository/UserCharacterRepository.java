@@ -17,4 +17,5 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter, Lo
     UserCharacter findCurrentCharacter(@Param("userId") Long userId);
 
     Optional<UserCharacter> findByUserAccountIdAndStatusAndIsDeleted(Long userAccountId,int status,boolean isDeleted);
+
 }

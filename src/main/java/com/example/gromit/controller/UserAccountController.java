@@ -7,7 +7,9 @@ import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.ErrorCode;
+import com.example.gromit.repository.UserCharacterRepository;
 import com.example.gromit.service.UserAccountService;
+import com.example.gromit.service.UserCharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,8 +33,11 @@ import static com.example.gromit.exception.ErrorCode.*;
 @RequestMapping("/users")
 @RestController
 public class UserAccountController {
+    private final UserCharacterRepository userCharacterRepository;
 
     private final UserAccountService userAccountService;
+
+    private final UserCharacterService userCharacterService;
 
 
     /**
@@ -53,6 +58,7 @@ public class UserAccountController {
 
         // 회원 가입 비즈니스 로직
         SignUpResponseDto result = userAccountService.signUp(signUpRequestDto);
+
 
         return BaseResponse.onSuccess(result);
     }
