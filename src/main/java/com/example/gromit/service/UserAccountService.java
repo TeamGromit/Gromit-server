@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -50,14 +51,14 @@ public class UserAccountService {
 
         // 이메일 중복검사 로직
         userAccountRepository
-                .findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), signUpRequestDto.isDeleted())
+                .findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), false)
                 .ifPresent(email -> {
                     throw new BaseException(DUPLICATED_EMAIL);
                 });
 
         // 닉네임 중복검사 로직
         userAccountRepository
-                .findByNicknameAndIsDeleted(signUpRequestDto.getNickname(), signUpRequestDto.isDeleted())
+                .findByNicknameAndIsDeleted(signUpRequestDto.getNickname(), false)
                 .ifPresent(nickname -> {
                     throw new BaseException(DUPLICATED_NICKNAME);
                 });
@@ -65,12 +66,12 @@ public class UserAccountService {
         // 사용자 생성
         UserAccount user = UserAccount.of(signUpRequestDto.getNickname(),
                 signUpRequestDto.getGithubName(),
-                signUpRequestDto.getCommits(),
-                signUpRequestDto.getTodayCommits(),
+                0,
+                0,
                 signUpRequestDto.getProvider(),
                 signUpRequestDto.getEmail(),
-                signUpRequestDto.isDeleted(),
-                signUpRequestDto.isAlarm());
+                false,
+                false);
 
         userAccountRepository.save(user);
 
@@ -96,7 +97,7 @@ public class UserAccountService {
     public GithubNicknameResponseDto getGithubUser(String githubNickname) {
 
         HttpURLConnection conn = null;
-        JSONObject responseJson = null;
+//        JSONObject responseJson = null;
 
         try {
             //url 설정
@@ -119,23 +120,16 @@ public class UserAccountService {
 
             // JSON Parsing
             JSONObject jsonObj = (JSONObject) new JSONParser().parse(sb.toString());
-            String message = (String) jsonObj.get("message");
-            System.out.println(message);
             String nickName = (String) jsonObj.get("login");
             String img = (String) jsonObj.get("avatar_url");
 
             return GithubNicknameResponseDto.of(nickName, img);
 
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new BaseException(NOT_FOUND_GITHUB_NICKNAME);
+        } catch (Exception e) {
+            throw new BaseException(GITHUB_SERVER_ERROR);
         }
-        return null;
     }
 
     /**
@@ -183,7 +177,7 @@ public class UserAccountService {
      * 깃허브 커밋 내역 조회 및 갱신
      */
     @Transactional
-    public void reloadCommits(UserAccount user,LocalDate time) {
+    public void reloadCommits(UserAccount user, LocalDate time) {
 
         UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
 
@@ -251,9 +245,9 @@ public class UserAccountService {
     /**
      * 진화 했을 때 누적 커밋 갱신
      */
-    public int renewCommits(UserAccount userAccount, int goal){
+    public int renewCommits(UserAccount userAccount, int goal) {
         int totalCommit = userAccount.getCommits();
-        int newCommits=totalCommit-goal;
+        int newCommits = totalCommit - goal;
         userAccount.setCommits(newCommits);
         userAccountRepository.save(userAccount);
         return newCommits;

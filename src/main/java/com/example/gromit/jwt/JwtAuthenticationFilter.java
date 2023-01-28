@@ -51,9 +51,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             }
 
         }
-//        else{
-//            throw new BadRequestException("토큰 값이 필요 합니다.");
-//        }
+
 
         chain.doFilter(request, response);
     }

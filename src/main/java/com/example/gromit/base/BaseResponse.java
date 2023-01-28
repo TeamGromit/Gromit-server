@@ -31,7 +31,7 @@ public class BaseResponse<T> {
     }
 
     public static <T> BaseResponse<T> onSuccess(T result){
-        return new BaseResponse<>(200, true, "요청에 성공하였습니다.", result);
+        return new BaseResponse<>(1000, true, "요청에 성공하였습니다.", result);
     }
 
 
