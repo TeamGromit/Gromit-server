@@ -24,6 +24,25 @@ public class UserCharacterService {
     private final UserAccountService userAccountService;
 
     /**
+     * 홈 비즈니스 로직
+     * - 키우고 있는 캐릭터와 필요한 정보들을 가져옴
+     */
+    public ShowHomeResponse getHomeProfile(UserAccount user){
+
+
+        UserCharacter userCharacter = userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(user.getId(), 0, false).get();
+        Characters characters = userCharacter.getCharacters();
+
+        ShowHomeResponse showHomeResponse = ShowHomeResponse.of(user.getCommits(),
+                user.getTodayCommit(),
+                characters.getLevel(),
+                characters.getName(),
+                characters.getImg(),
+                characters.getGoal());
+        return showHomeResponse;
+    }
+
+    /**
      * 새로고침 비즈니스 로직
      * - 진화를 할 수 있으면 새로운 캐릭터를 부여, 진화를 할 수 없으면 기존의 캐릭터 사용
      */
@@ -76,7 +95,7 @@ public class UserCharacterService {
                 goal);
     }
 
-    private Characters getNewCharacters(int level) {
+    public Characters getNewCharacters(int level) {
         if (level == 1) {
             return selectNextLevelCharacter(2);
         }

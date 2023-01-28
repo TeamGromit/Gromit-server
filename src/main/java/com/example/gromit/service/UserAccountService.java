@@ -4,7 +4,9 @@ import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
+import com.example.gromit.entity.Characters;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.exception.BaseException;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
@@ -42,6 +44,8 @@ public class UserAccountService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
+
+    private final UserCharacterService userCharacterService;
 
     /**
      * 회원가입
@@ -82,6 +86,11 @@ public class UserAccountService {
         // 리프레쉬 토큰 업데이트
         user.setRefreshToken(newRefreshToken);
         userAccountRepository.save(user);
+
+        // 1레벨 캐릭터 생성
+        Characters characters = userCharacterService.getNewCharacters(3);
+        UserCharacter userCharacter = UserCharacter.of(user, characters, 0, false);
+        userCharacterRepository.save(userCharacter);
 
         return new SignUpResponseDto(user.getId(), newAccessToken, newRefreshToken);
 
