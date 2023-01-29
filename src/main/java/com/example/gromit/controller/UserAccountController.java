@@ -57,6 +57,7 @@ public class UserAccountController {
         SignUpResponseDto result = userAccountService.signUp(signUpRequestDto);
 
 
+
         return BaseResponse.onSuccess(result);
     }
 

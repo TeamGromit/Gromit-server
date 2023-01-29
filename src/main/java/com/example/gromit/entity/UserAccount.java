@@ -39,11 +39,11 @@ public class UserAccount extends BaseEntity implements UserDetails {
     @OrderBy("createdAt ASC")
     @OneToMany
     @ToString.Exclude
-    private List<UserCharacter> userCharacters = new LinkedList<>();
+    private final List<UserCharacter> userCharacters = new LinkedList<>();
 
     @OneToMany
     @ToString.Exclude
-    private List<Member> members = new LinkedList<>();
+    private final List<Member> members = new LinkedList<>();
 
 
     @Column(nullable = false, length = 255)
