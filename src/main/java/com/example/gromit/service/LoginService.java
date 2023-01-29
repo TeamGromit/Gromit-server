@@ -37,8 +37,8 @@ import static com.example.gromit.exception.ErrorCode.FAIL_TO_MAKE_APPLE_PUBLIC_K
 @Service
 public class LoginService {
 
-    private UserAccountRepository userAccountRepository;
-    private JwtService jwtService;
+    private final UserAccountRepository userAccountRepository;
+    private final JwtService jwtService;
 
     public PublicKey getPublicKey(JsonObject object) {
         String nStr = object.get("n").toString();
