@@ -45,8 +45,6 @@ public class UserAccountService {
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
 
-    private final UserCharacterService userCharacterService;
-
     /**
      * 회원가입
      */
@@ -87,10 +85,6 @@ public class UserAccountService {
         user.setRefreshToken(newRefreshToken);
         userAccountRepository.save(user);
 
-        // 1레벨 캐릭터 생성
-        Characters characters = userCharacterService.getNewCharacters(3);
-        UserCharacter userCharacter = UserCharacter.of(user, characters, 0, false);
-        userCharacterRepository.save(userCharacter);
 
         return new SignUpResponseDto(user.getId(), newAccessToken, newRefreshToken);
 

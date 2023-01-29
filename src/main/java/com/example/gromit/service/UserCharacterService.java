@@ -24,10 +24,20 @@ public class UserCharacterService {
     private final UserAccountService userAccountService;
 
     /**
+     *
+     */
+    public void grantFirstCharacter(UserAccount user) {
+        // 1레벨 캐릭터 생성
+        Characters characters = getNewCharacters(3);
+        UserCharacter userCharacter = UserCharacter.of(user, characters, 0, false);
+        userCharacterRepository.save(userCharacter);
+    }
+
+    /**
      * 홈 비즈니스 로직
      * - 키우고 있는 캐릭터와 필요한 정보들을 가져옴
      */
-    public ShowHomeResponse getHomeProfile(UserAccount user){
+    public ShowHomeResponse getHomeProfile(UserAccount user) {
 
 
         UserCharacter userCharacter = userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(user.getId(), 0, false).get();
@@ -115,4 +125,9 @@ public class UserCharacterService {
         return levelCharacters.get(randomIndex);
     }
 
+    public UserCharacter findByUserAccountId(UserAccount userAccount) {
+        return userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(userAccount.getId(),
+                0,
+                false).get();
+    }
 }

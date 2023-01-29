@@ -3,6 +3,7 @@ package com.example.gromit.controller;
 import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.home.response.ShowHomeResponse;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.service.UserAccountService;
 import com.example.gromit.service.UserCharacterService;
 import lombok.RequiredArgsConstructor;
@@ -28,28 +29,36 @@ public class HomeController {
 
     /**
      * Home 으로 넘어올 때 API
+     *
      * @param userAccount
      * @return
      */
     @GetMapping
-    public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount){
+    public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount) {
 
         // 커밋 갱신
         userAccountService.reloadCommits(userAccount, LocalDate.now());
 
+        //유저에게 할당된 캐릭터가 없다면 1레벨 캐릭터 부여
+        UserCharacter userCharacter = userCharacterService.findByUserAccountId(userAccount);
+        if (userCharacter == null) {
+            userCharacterService.grantFirstCharacter(userAccount);
+        }
+
         // Home 에 필요한 정보들 가져옴
-        ShowHomeResponse result=userCharacterService.getHomeProfile(userAccount);
+        ShowHomeResponse result = userCharacterService.getHomeProfile(userAccount);
 
         return BaseResponse.onSuccess(result);
     }
 
     /**
      * 새로고침 API
+     *
      * @param userAccount
      * @return
      */
     @GetMapping("/reload")
-    public BaseResponse<ShowHomeResponse> reload(@AuthenticationPrincipal UserAccount userAccount){
+    public BaseResponse<ShowHomeResponse> reload(@AuthenticationPrincipal UserAccount userAccount) {
 
         // 커밋 갱신
         userAccountService.reloadCommits(userAccount, LocalDate.now());

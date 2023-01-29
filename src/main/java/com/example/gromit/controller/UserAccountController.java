@@ -33,11 +33,8 @@ import static com.example.gromit.exception.ErrorCode.*;
 @RequestMapping("/users")
 @RestController
 public class UserAccountController {
-    private final UserCharacterRepository userCharacterRepository;
 
     private final UserAccountService userAccountService;
-
-    private final UserCharacterService userCharacterService;
 
 
     /**
