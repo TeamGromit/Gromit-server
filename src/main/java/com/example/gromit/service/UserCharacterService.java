@@ -39,12 +39,12 @@ public class UserCharacterService {
      */
     public ShowHomeResponse getHomeProfile(UserAccount user) {
 
-
+        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
         UserCharacter userCharacter = userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(user.getId(), 0, false).get();
         Characters characters = userCharacter.getCharacters();
 
-        ShowHomeResponse showHomeResponse = ShowHomeResponse.of(user.getCommits(),
-                user.getTodayCommit(),
+        ShowHomeResponse showHomeResponse = ShowHomeResponse.of(userAccount.getCommits(),
+                userAccount.getTodayCommit(),
                 characters.getLevel(),
                 characters.getName(),
                 characters.getImg(),
