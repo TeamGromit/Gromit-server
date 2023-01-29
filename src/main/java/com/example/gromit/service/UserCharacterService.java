@@ -128,6 +128,6 @@ public class UserCharacterService {
     public UserCharacter findByUserAccountId(UserAccount userAccount) {
         return userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(userAccount.getId(),
                 0,
-                false).get();
+                false).orElse(null);
     }
 }
