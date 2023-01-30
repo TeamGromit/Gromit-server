@@ -60,7 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CorsConfiguration getDefaultCorsConfiguration() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:8081", "https://0euvre.click", "https://0euvre.link",
+                Arrays.asList("http://localhost:8081", "https://gromit.shop",
                         "https://appleid.apple.com"));
         configuration.setAllowedHeaders(Arrays.asList("*")); // 모든 header 에 응답을 허용
         configuration.setAllowedMethods(Arrays.asList("*")); // 모든 get,post,patch,put,delete 요청 허용

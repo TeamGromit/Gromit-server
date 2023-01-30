@@ -36,14 +36,14 @@ public class UserAccount extends BaseEntity implements UserDetails {
     private String nickname;
 
 
-    @OrderBy("createdAt ASC")
-    @OneToMany
-    @ToString.Exclude
-    private final List<UserCharacter> userCharacters = new LinkedList<>();
-
-    @OneToMany
-    @ToString.Exclude
-    private final List<Member> members = new LinkedList<>();
+//    @OrderBy("createdAt ASC")
+//    @OneToMany
+//    @ToString.Exclude
+//    private final List<UserCharacter> userCharacters = new LinkedList<>();
+//
+//    @OneToMany
+//    @ToString.Exclude
+//    private final List<Member> members = new LinkedList<>();
 
 
     @Column(nullable = false, length = 255)

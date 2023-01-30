@@ -1,6 +1,7 @@
 package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.home.response.GetCollectionResponse;
 import com.example.gromit.dto.home.response.ShowHomeResponse;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,7 +48,7 @@ public class HomeController {
         }
 
         // Home 에 필요한 정보들 가져옴
-        ShowHomeResponse result = userCharacterService.getHomeProfile(userAccount);
+        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount);
 
         return BaseResponse.onSuccess(result);
     }
@@ -69,5 +71,12 @@ public class HomeController {
         return BaseResponse.onSuccess(result);
     }
 
+    @GetMapping("/collections")
+    public BaseResponse<List<GetCollectionResponse>> collection(@AuthenticationPrincipal UserAccount userAccount){
+
+        List<GetCollectionResponse> result = userCharacterService.getCollection(userAccount);
+
+        return BaseResponse.onSuccess(result);
+    }
 
 }
