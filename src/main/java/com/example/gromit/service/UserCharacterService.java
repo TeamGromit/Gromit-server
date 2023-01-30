@@ -1,5 +1,6 @@
 package com.example.gromit.service;
 
+import com.example.gromit.dto.home.response.GetCollectionResponse;
 import com.example.gromit.dto.home.response.ShowHomeResponse;
 import com.example.gromit.entity.Characters;
 import com.example.gromit.entity.UserAccount;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -22,6 +24,10 @@ public class UserCharacterService {
     private final UserAccountRepository userAccountRepository;
     private final CharactersRepository charactersRepository;
     private final UserAccountService userAccountService;
+
+    private static GetCollectionResponse apply(UserCharacter character) {
+        return GetCollectionResponse.of(character.getCharacters().getName(), character.getCharacters().getImg());
+    }
 
     /**
      *
@@ -96,9 +102,9 @@ public class UserCharacterService {
         }
 
 
-        // 진화를 할 상황이 아닐 때
-        return ShowHomeResponse.of(totalCommit
-                , userAccount.getTodayCommit(),
+        // 진화를 할 상황이 아닐 때 원래 캐릭터 반환
+        return ShowHomeResponse.of(totalCommit,
+                userAccount.getTodayCommit(),
                 level,
                 currentCharacter.getCharacters().getName(),
                 currentCharacter.getCharacters().getImg(),
@@ -129,5 +135,12 @@ public class UserCharacterService {
         return userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(userAccount.getId(),
                 0,
                 false).orElse(null);
+    }
+
+    public List<GetCollectionResponse> getCollection(UserAccount userAccount) {
+        return userCharacterRepository.findAllByUserAccountIdAndStatusAndIsDeleted(userAccount.getId(), 1, false)
+                .stream()
+                .map(UserCharacterService::apply)
+                .collect(Collectors.toList());
     }
 }

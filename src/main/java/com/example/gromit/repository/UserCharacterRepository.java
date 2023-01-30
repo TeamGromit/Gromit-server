@@ -12,6 +12,7 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface UserCharacterRepository extends JpaRepository<UserCharacter, Long> {
     List<UserCharacter> findAllByUserAccountIdAndIsDeleted(Long userAccountId, Boolean isDeleted);
+    List<UserCharacter> findAllByUserAccountIdAndStatusAndIsDeleted(Long userAccountId,int status, Boolean isDeleted);
 
     @Query(value = "select * from user_character where user_account_id = :userId and status = 0;", nativeQuery = true)
     UserCharacter findCurrentCharacter(@Param("userId") Long userId);
