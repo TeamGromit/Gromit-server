@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,13 +14,13 @@ import java.time.LocalDateTime;
 public class GetChallengesResponse {
 
     private final String title;
-    private final LocalDateTime startDate;
+    private final LocalDate startDate;
     private final int goal;
 
     private final int recruits;
     private final int currentMemberNum;
 
-    private GetChallengesResponse(String title, LocalDateTime startDate, int goal, int recruits, int currentMemberNum) {
+    private GetChallengesResponse(String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
         this.title = title;
         this.startDate = startDate;
         this.goal = goal;
@@ -27,7 +28,7 @@ public class GetChallengesResponse {
         this.currentMemberNum = currentMemberNum;
     }
 
-    public static GetChallengesResponse of(String title,LocalDateTime startDate,int goal,int recruits, int currentMemberNum){
+    public static GetChallengesResponse of(String title,LocalDate startDate,int goal,int recruits, int currentMemberNum){
         return new GetChallengesResponse(title, startDate, goal, recruits, currentMemberNum);
     }
 
