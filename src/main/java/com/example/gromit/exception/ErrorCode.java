@@ -33,15 +33,16 @@ public enum ErrorCode {
     DUPLICATED_NICKNAME(3006, "중복된 닉네임 입니다.", BAD_REQUEST),
     DUPLICATED_EMAIL(3007, "중복된 이메일 입니다.", BAD_REQUEST),
     NOT_FOUND_GITHUB_NICKNAME(3008,"해당 깃허브 닉네임을 찾을 수 없습니다.",BAD_REQUEST),
-    GITHUB_SERVER_ERROR(3009,"깃허브 서버와 통신에 실패하였습니다.",FORBIDDEN);
+    GITHUB_SERVER_ERROR(3009,"깃허브 서버와 통신에 실패하였습니다.",FORBIDDEN),
 
     /**
      * 4000 : character 관련 오류
      */
 
     /**
-     *  5000 : challenge 관련 오류
+     * 5000 : challenge 관련 오류
      */
+    NOT_VALID_CHALLENGE_PASSWORD(5001, "올바르지 않은 패스워드입니다.", BAD_REQUEST);
 
 
 
