@@ -14,8 +14,11 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: trace # jpa 쿼리 로그를 debug 모드로 관찰 가능 ( bing parameter 를 보여줌 )
 
 spring:
-  profiles:
-    include: aws
+  datasource:
+    url: jdbc:mysql://gromit-mysql.comnx9emwbgy.ap-northeast-2.rds.amazonaws.com:3306/gromit
+    username: root
+    password: gromit123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     defer-datasource-initialization: false  #테스트용 데이터베이스를 만들 수 있게 해줌 (data.sql)
     hibernate:
@@ -51,7 +54,25 @@ spring:
 server:
   port: 8081
 ---
+jwt:
+  secret: c3ByaW5nLWJvb3Qtc2VjdXJpdHktand0LXR1dG9yaWFsLWppd29vbi1zcHJpbmctYm9vdC1zZWN1cml0eS1qd3QtdHV0b3JpYWwK
 
+# [그림 1.8] Team ID 값 입력
+APPLE:
+  AUTH:
+    TOKEN:
+      URL: https://appleid.apple.com/auth/token
+  PUBLICKEY:
+    URL: https://appleid.apple.com/auth/keys
+  WEBSITE:
+    URL: https://gromit.shop
+  ISS: https://applid.apple.com
+  AUD: io.gromit.services
+  TEAM:
+    ID: WCVG52JG6Z
+  KEY:
+    ID: 28GD5FQ8NV
+    PATH: static/apple/AuthKey_28GD5FQ8NV.p8
 
 
 
