@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +37,9 @@ public class Challenge extends BaseEntity {
     private String title;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private int goal;
@@ -54,7 +55,7 @@ public class Challenge extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    public Challenge(UserAccount userAccount, String title, LocalDateTime startDate, LocalDateTime endDate, int goal, int recruits, boolean isPassword) {
+    private Challenge(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits, boolean isPassword, String password, boolean isDeleted) {
         this.userAccount = userAccount;
         this.title = title;
         this.startDate = startDate;
@@ -62,5 +63,13 @@ public class Challenge extends BaseEntity {
         this.goal = goal;
         this.recruits = recruits;
         this.isPassword = isPassword;
+        this.password = password;
+        this.isDeleted = isDeleted;
     }
+
+    public static Challenge of(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits,String password, boolean isPassword, boolean isDeleted){
+        return new Challenge(userAccount, title, startDate, endDate, goal, recruits, isPassword,password, isDeleted);
+    }
+
+
 }
