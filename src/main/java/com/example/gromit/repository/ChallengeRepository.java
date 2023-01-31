@@ -12,4 +12,5 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
 
+    List<Challenge> findAllByIsDeleted(boolean isDeleted);
 }
