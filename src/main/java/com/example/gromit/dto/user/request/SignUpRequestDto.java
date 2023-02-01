@@ -13,8 +13,11 @@ import javax.validation.constraints.Pattern;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+//@Builder
 public class SignUpRequestDto {
+
+    @NotBlank(message = "가입유형은 값이 있어야 합니다.")
+    private String provider;
 
     @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.")
     private String nickname;
@@ -23,11 +26,9 @@ public class SignUpRequestDto {
     private String githubName;
 
     @Email
-    @NotNull(message = "이메일은 값이 있어야 합니다.")
+    @NotBlank(message = "이메일은 값이 있어야 합니다.")
     private String email;
 
-    @NotNull(message = "가입유형은 값이 있어야 합니다.")
-    private String provider;
 
 
 
