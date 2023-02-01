@@ -68,6 +68,14 @@ public class ChallengeService {
         challengeRepository.save(challenge);
     }
 
+    /**
+     * paasword 정규식 패턴 체크
+     */
+    public boolean isValidPassword(String password){
+        Matcher matcher = PASSWORD_PATTERN.matcher(password);
+        return matcher.matches();
+    }
+
     public GetChallengeResponse findChallengeById(Long id) {
         Challenge challenge = challengeRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
@@ -117,11 +125,4 @@ public class ChallengeService {
         challengeRepository.save(challenge);
     }
 
-    /**
-     * paasword 정규식 패턴 체크
-     */
-    public boolean isValidPassword(String password){
-        Matcher matcher = PASSWORD_PATTERN.matcher(password);
-        return matcher.matches();
-    }
 }
