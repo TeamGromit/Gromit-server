@@ -64,10 +64,11 @@ public class UserAccountController {
     /**
      * 깃허브 닉네임 조회 API
      */
-    @GetMapping("/github/{nickname}")
-    public BaseResponse<GithubNicknameResponseDto> checkGithubNickname(@NotBlank(message = "깃허브 닉네임을 입력해주세요.")
-                                                                       @PathVariable("nickname") String githubNickname) {
+    @GetMapping(value = {"/github/{nickname}","/github"})
+    public BaseResponse<GithubNicknameResponseDto> checkGithubNickname(@PathVariable(value = "nickname",required = false)
+                                                                           @NotBlank(message = "깃허브 닉네임을 입력해주세요.") String githubNickname) {
         log.info(githubNickname);
+        System.out.println("githubNickname = " + githubNickname);
         GithubNicknameResponseDto result = userAccountService.getGithubUser(githubNickname);
         return BaseResponse.onSuccess(result);
     }
@@ -75,10 +76,11 @@ public class UserAccountController {
     /**
      * 닉네임 조회 API
      */
-    @GetMapping("/{nickname}")
+    @GetMapping(value={"/check/{nickname}","/check"})
     public BaseResponse<NicknameResponseDto> checkNickname(
-            @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.")
-            @PathVariable("nickname") String nickname) {
+            @PathVariable(value = "nickname",required = false)
+            @NotBlank(message = "닉네임을 입력해주세요.")
+            @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.") String nickname) {
         log.info(nickname);
 
         if (userAccountService.checkNickname(nickname)) {
