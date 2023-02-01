@@ -14,6 +14,6 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class LoginRequestDto {
 
-    @NotNull
+    @NotNull(message = "애플 토큰 값이 존재하지 않습니다.")
     private String token;
 }
