@@ -42,7 +42,15 @@ public enum ErrorCode {
     /**
      * 5000 : challenge 관련 오류
      */
-    NOT_VALID_CHALLENGE_PASSWORD(5001, "올바르지 않은 패스워드입니다.", BAD_REQUEST);
+    NOT_VALID_CHALLENGE_PASSWORD(5001, "올바르지 않은 패스워드입니다.", BAD_REQUEST),
+
+    MEMBER_OVERSTAFFED(5002, "참여 가능 인원을 초과했습니다.", BAD_REQUEST),
+    DUPLICATED_MEMBER(5003, "이미 참가한 챌린지 입니다.", BAD_REQUEST),
+    INCORRECT_PASSWORD(5004, "비밀번호가 맞지 않습니다.", BAD_REQUEST),
+
+
+    NOT_CHALLENGE_MASTER(5010, "방장이 아닌 챌린지는 삭제할 수 없습니다.", BAD_REQUEST),
+    CHALLENGE_IN_PROGRESS(5011, "진행중인 챌린지는 삭제할 수 없습니다.", BAD_REQUEST);
 
 
 

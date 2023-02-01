@@ -39,10 +39,7 @@ public enum BaseResponseStatus {
     GITHUB_NICKNAME_NOT_FOUND(false, 3001, "해당 깃허브 닉네임을 찾을 수 없습니다."),
     NICKNAME_ALREADY_EXIST(false, 3002, "이미 존재하는 닉네임입니다."),
 
-
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
-
-
 
     /**
      * 4000 : Database, Server 오류
