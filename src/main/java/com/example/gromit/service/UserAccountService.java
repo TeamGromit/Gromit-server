@@ -99,32 +99,34 @@ public class UserAccountService {
      */
     public GithubNicknameResponseDto getGithubUser(String githubNickname) {
 
-        HttpURLConnection conn = null;
+        String githubUrl = "https://api.github.com/users/" + githubNickname;
+
 //        JSONObject responseJson = null;
 
         try {
-            //url 설정
-            URL url = new URL("https://api.github.com/users/" + githubNickname);
-            conn = (HttpURLConnection) url.openConnection();
+//            url 설정
+            URL url = new URL(githubUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/json"); // Content-Type 지정
+            conn.setRequestProperty("charset", "utf-8");
             conn.setDoOutput(true); // 출력 가능 상태로 변경
             conn.connect();
 
             // 데이터  읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = "";
             while ((line = br.readLine()) != null) {
                 sb.append(line); // StringBuilder 사용시 객체를 계속 생성하지 않고 하나의 객체릂 수정하므로 더 빠름.
             }
-            conn.disconnect();
+//            conn.disconnect();
 
             // JSON Parsing
             JSONObject jsonObj = (JSONObject) new JSONParser().parse(sb.toString());
             String nickName = (String) jsonObj.get("login");
             String img = (String) jsonObj.get("avatar_url");
+
 
             return GithubNicknameResponseDto.of(nickName, img);
 
