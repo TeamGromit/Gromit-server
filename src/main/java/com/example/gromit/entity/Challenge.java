@@ -17,6 +17,7 @@ import java.util.List;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
 public class Challenge extends BaseEntity {
@@ -26,12 +27,13 @@ public class Challenge extends BaseEntity {
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
-    @OneToMany
+    @OneToMany(mappedBy = "challenge")
     private List<Member> members = new LinkedList<>();
 
-    @Column(nullable = false,length =50)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(nullable = false)
@@ -53,8 +55,7 @@ public class Challenge extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @Builder
-    public Challenge(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits, boolean isPassword, String password, boolean isDeleted) {
+    private Challenge(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits, boolean isPassword, String password, boolean isDeleted) {
         this.userAccount = userAccount;
         this.title = title;
         this.startDate = startDate;
@@ -65,4 +66,10 @@ public class Challenge extends BaseEntity {
         this.password = password;
         this.isDeleted = isDeleted;
     }
+
+    public static Challenge of(UserAccount userAccount, String title, LocalDate startDate, LocalDate endDate, int goal, int recruits,String password, boolean isPassword, boolean isDeleted){
+        return new Challenge(userAccount, title, startDate, endDate, goal, recruits, isPassword,password, isDeleted);
+    }
+
+
 }

@@ -1,10 +1,7 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -15,8 +12,10 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
+@Builder
 public class Characters extends BaseEntity {
 
     @Id
@@ -24,17 +23,15 @@ public class Characters extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
+    private String img;
+
+    @Column(nullable = false)
     private int level;
 
     @Column(nullable = false)
     private int goal;
 
-    @Column(nullable = false,length = 50)
-    private String characterName;
-
-    @Column(nullable = false)
-    private String characterImg;
-
-
+    @Column(nullable = false, length = 50)
+    private String name;
 
 }

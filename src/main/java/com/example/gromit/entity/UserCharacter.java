@@ -1,10 +1,7 @@
 package com.example.gromit.entity;
 
 import com.example.gromit.base.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -16,8 +13,10 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Getter
+@Setter
 @ToString
 @Entity
+@Builder
 public class UserCharacter extends BaseEntity {
 
     @Id
@@ -29,9 +28,26 @@ public class UserCharacter extends BaseEntity {
     private UserAccount userAccount;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="characters_id")
+    @JoinColumn(name = "characters_id")
     private Characters characters;
 
-    private String status;
+    // 0 진행중 , 1 완료
+    @Column(nullable = false)
+    private int status;
+
+    @Column(nullable = false)
+    private boolean isDeleted;
+
+    private UserCharacter(UserAccount userAccount, Characters characters, int status, boolean isDeleted) {
+        this.userAccount = userAccount;
+        this.characters = characters;
+        this.status = status;
+        this.isDeleted = isDeleted;
+    }
+
+    public static UserCharacter of(UserAccount userAccount, Characters characters, int status, boolean isDeleted) {
+        return new UserCharacter(userAccount, characters, status, isDeleted);
+    }
+
 
 }

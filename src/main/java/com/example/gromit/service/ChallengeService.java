@@ -1,89 +1,127 @@
 package com.example.gromit.service;
 
-import com.example.gromit.dto.challenge.GetChallengeListRes;
-import com.example.gromit.dto.challenge.GetChallengeRes;
-import com.example.gromit.dto.challenge.ChallengeRes;
-import com.example.gromit.dto.challenge.PostChallengeReq;
+import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
+import com.example.gromit.dto.challenge.request.PostChallengeRequest;
+import com.example.gromit.dto.challenge.response.GetChallengeResponse;
+import com.example.gromit.dto.challenge.response.GetChallengesResponse;
 import com.example.gromit.entity.Challenge;
+import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.exception.BadRequestException;
+import com.example.gromit.exception.BaseException;
 import com.example.gromit.repository.ChallengeRepository;
-import com.example.gromit.repository.UserAccountRepository;
+import com.example.gromit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Slf4j
-@Service
+import static com.example.gromit.exception.ErrorCode.INCORRECT_PASSWORD;
+import static com.example.gromit.exception.ErrorCode.NOT_VALID_CHALLENGE_PASSWORD;
+
 @RequiredArgsConstructor
+@Service
 public class ChallengeService {
+
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[0-9a-zA-Z]{1,10}$");
     private final ChallengeRepository challengeRepository;
-    private final UserAccountRepository userAccountRepository;
 
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
-//    public List<GetChallengeListRes> getAllChallenges(Pageable pageable) {
-//        return challengeRepository.findAll(pageable).stream()
-//                .map(GetChallengeListRes::new)
-//                .collect(Collectors.toList());
-//
-//    }
-//    public GetChallengeRes get(Long id) {
-//        Challenge challenge2 = challengeRepository.findById(id)
-//                .orElseThrow(IllegalArgumentException::new);
-//        return GetChallengeRes.builder()
-//                .masterName(challenge2.getUserAccount().getNickname())
-//                .title(challenge2.getTitle())
-//                .startDate(challenge2.getStartDate())
-//                .endDate(challenge2.getEndDate())
-//                .goal(challenge2.getGoal())
-//                .build();
-//    }
+    public List<GetChallengesResponse> findChallenges() {
 
-    public void create(Long userId, PostChallengeReq postChallengeReq){
-        UserAccount userAccount = userAccountRepository.findById(userId).get();
-        Challenge challenge = Challenge.builder()
-                .userAccount(userAccount)
-                .title(postChallengeReq.getTitle())
-                .startDate(postChallengeReq.getStartDate())
-                .endDate(postChallengeReq.getEndDate())
-                .goal(postChallengeReq.getGoal())
-                .recruits(postChallengeReq.getRecruits())
-                .isPassword(postChallengeReq.isPassword())
-                .password(postChallengeReq.getPassword())
-                .isDeleted(postChallengeReq.isDeleted())
-                .build();
+        return challengeRepository.findAllByIsDeleted(false)
+                .stream()
+                .map(GetChallengesResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    public void saveChallenge(UserAccount userAccount, PostChallengeRequest postChallengeRequest) {
+
+        if(postChallengeRequest.isPassword()){
+            String password= postChallengeRequest.getPassword();
+            if(isValidPassword(password)){
+                throw new BadRequestException(NOT_VALID_CHALLENGE_PASSWORD);
+            }
+
+        }
+
+        Challenge challenge = Challenge.of(
+                userAccount,
+                postChallengeRequest.getTitle(),
+                postChallengeRequest.getStartDate(),
+                postChallengeRequest.getEndDate(),
+                postChallengeRequest.getGoal(),
+                postChallengeRequest.getRecruits(),
+                postChallengeRequest.getPassword(),
+                postChallengeRequest.isPassword(),
+                false
+        );
+
         challengeRepository.save(challenge);
     }
 
-//    public void create(PostChallengeReq postChallengeReq){
-//        Challenge challenge = Challenge.builder()
-//                .userAccount(postChallengeReq.getUserId())
-//                .title(postChallengeReq.getTitle())
-//                .startDate(postChallengeReq.getStartDate())
-//                .endDate(postChallengeReq.getEndDate())
-//                .goal(postChallengeReq.getGoal())
-//                .recruits(postChallengeReq.getRecruits())
-//                .isPassword(postChallengeReq.isPassword())
-//                .password(postChallengeReq.getPassword())
-//                .build();
-//        challengeRepository.save(challenge);
-//    }
+    public GetChallengeResponse findChallengeById(Long id) {
+        Challenge challenge = challengeRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
 
-//    public void create(PostChallengeReq postChallengeReq) {
-//        Challenge challenge = Challenge.builder()
-//                .userId(postChallengeReq.getUserAccount())
-//                .title(postChallengeReq.getTitle())
-//                .startDate(postChallengeReq.getStartDate())
-//                .endDate(postChallengeReq.getEndDate())
-//                .goal(postChallengeReq.getGoal())
-//                .recruits(postChallengeReq.getRecruits())
-//                .isPassword(postChallengeReq.isPassword())
-//                .password(postChallengeReq.getPassword())
-//                .build();
-//        challengeRepository.save(challenge);
-//    }
+        GetChallengeResponse getChallengeRes = new GetChallengeResponse(
+                challenge.getUserAccount().getNickname(),
+                challenge.getTitle(),
+                challenge.getStartDate(),
+                challenge.getEndDate(),
+                challenge.getGoal()
+        );
+        return getChallengeRes;
+    }
+
+    public void saveMember(Long challengeId, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+        int commits = 0; // 챌린지 시작날짜와 참여날짜가 다를 때는 커밋수에 0 세팅
+        if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
+            commits = userAccount.getCommits(); }
+        Member member = Member.builder()
+                .userAccount(userAccount)
+                .challenge(challenge)
+                .commits(commits)
+                .isDeleted(false)
+                .build();
+        memberRepository.save(member);
+    }
+
+    public boolean comparePassword (Long challengeId, PostChallengePasswordRequest postChallengePasswordRequest) {
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+        return Objects.equals(challenge.getPassword(), postChallengePasswordRequest.getPassword());
+    }
+
+    public void delete(Long id, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(id).get();
+
+        //챌린지에 속한 참가자들을 (방장 포함) 모두 삭제
+        List<Member> member_list = memberRepository.findAllByChallengeId(id);
+
+        for (Member member: member_list) {
+            member.setDeleted(true);
+            memberRepository.save(member);
+        }
+
+        //챌린지 삭제
+        challenge.setDeleted(true);
+        challengeRepository.save(challenge);
+    }
+
+    /**
+     * paasword 정규식 패턴 체크
+     */
+    public boolean isValidPassword(String password){
+        Matcher matcher = PASSWORD_PATTERN.matcher(password);
+        return matcher.matches();
+    }
 }
