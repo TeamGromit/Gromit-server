@@ -7,6 +7,7 @@ import com.example.gromit.dto.challenge.response.GetChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.service.ChallengeService;
+import com.example.gromit.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +32,8 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
 
+    private final MemberService memberService;
+
     /**
      * 챌린지 목록 조회 API
      */
@@ -53,7 +56,8 @@ public class ChallengeController {
             return BaseResponse.onFailure(CONTROLLER_COMMON_ERROR_CODE.getCode(), objectError.getDefaultMessage(), null);
         }
 
-        challengeService.saveChallenge(userAccount,postChallengeRequest);
+        Challenge challenge = challengeService.saveChallenge(userAccount, postChallengeRequest);
+        memberService.saveMember(userAccount,challenge);
 
         return BaseResponse.onSuccess("챌린지 생성에 성공했습니다.");
 

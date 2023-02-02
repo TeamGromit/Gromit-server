@@ -36,7 +36,7 @@ public class ChallengeService {
                 .collect(Collectors.toList());
     }
 
-    public void saveChallenge(UserAccount userAccount, PostChallengeRequest postChallengeRequest) {
+    public Challenge saveChallenge(UserAccount userAccount, PostChallengeRequest postChallengeRequest) {
 
         if(postChallengeRequest.isPassword()){
             String password= postChallengeRequest.getPassword();
@@ -58,7 +58,7 @@ public class ChallengeService {
                 false
         );
 
-        challengeRepository.save(challenge);
+        return challengeRepository.save(challenge);
     }
 
     /**
