@@ -1,6 +1,7 @@
 package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
@@ -91,5 +92,20 @@ public class ChallengeController {
         Challenge challenge = challengeService.findById(challengeId);
         challengeService.saveMember(challengeId, userAccount);
         return BaseResponse.onSuccess("챌린지에 참가했습니다.");
+    }
+
+    @PostMapping("/{challengeId}/password") // 패스워드 확인
+    public BaseResponse<String> comparePassword (@PathVariable Long challengeId,
+                                                 @AuthenticationPrincipal UserAccount userAccount,
+                                                 @Validated @RequestBody PostChallengePasswordRequest postChallengePasswordRequest, BindingResult bindingResult) {
+
+
+        if (bindingResult.hasErrors()) {
+            ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
+            return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
+        }
+
+        challengeService.comparePassword(challengeId, postChallengePasswordRequest);
+        return BaseResponse.onSuccess("패스워드 인증에 성공했습니다.");
     }
 }

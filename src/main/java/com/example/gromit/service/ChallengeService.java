@@ -1,6 +1,7 @@
 package com.example.gromit.service;
 
 import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
@@ -8,6 +9,7 @@ import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
+import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
 import com.example.gromit.repository.MemberRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -148,6 +151,7 @@ public class ChallengeService {
         if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
             commits = userAccount.getCommits();
         }
+
         Member member = Member.of(
                 challenge,
                 userAccount,
@@ -156,5 +160,16 @@ public class ChallengeService {
         );
 
         memberRepository.save(member);
+    }
+
+    public void comparePassword (Long challengeId, PostChallengePasswordRequest postChallengePasswordRequest) {
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+        if(!isCorrectChallengePassword(postChallengePasswordRequest, challenge)){
+            throw new BadRequestException(INCORRECT_PASSWORD);
+        }
+    }
+
+    private static boolean isCorrectChallengePassword(PostChallengePasswordRequest postChallengePasswordRequest, Challenge challenge) {
+        return Objects.equals(challenge.getPassword(), postChallengePasswordRequest.getPassword());
     }
 }
