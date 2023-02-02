@@ -35,7 +35,7 @@ public class ChallengeService {
 
     public List<GetChallengeGroupResponse> findChallenges() {
 
-        return challengeRepository.findAllByIsDeleted(false)
+        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual (false, LocalDate.now())
                 .stream()
                 .map(GetChallengeGroupResponse::from)
                 .collect(Collectors.toList());
