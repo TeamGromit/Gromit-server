@@ -37,11 +37,14 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private boolean isDeleted;
 
-    @Builder
-    public Member(Challenge challenge, UserAccount userAccount, int commits, boolean isDeleted) {
+    private Member(Challenge challenge, UserAccount userAccount, int commits, boolean isDeleted) {
         this.challenge = challenge;
         this.userAccount = userAccount;
         this.commits = commits;
         this.isDeleted = isDeleted;
+    }
+
+    public static Member of(Challenge challenge, UserAccount userAccount, int commits, boolean isDeleted) {
+        return new Member(challenge, userAccount, commits, isDeleted);
     }
 }

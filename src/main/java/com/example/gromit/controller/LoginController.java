@@ -31,7 +31,7 @@ public class LoginController {
      * @return
      */
     @PostMapping("/apple")
-    public BaseResponse<LoginResponseDto> appleLogin(@Valid @RequestBody
+    public BaseResponse<LoginResponseDto> appleLogin(@Validated @RequestBody
                                                          LoginRequestDto loginRequestDto, BindingResult bindingResult){
 
         log.info("apple-login");

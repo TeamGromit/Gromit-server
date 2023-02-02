@@ -18,16 +18,20 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity onBaseException(BaseException exception){
-        return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getResponseMessage(), exception.getData()), null, exception.getHttpStatus());
+        return new ResponseEntity<>(BaseResponse.onFailure(exception.getErrorCode().getCode(), exception.getResponseMessage(), exception.getData()), null, exception.getHttpStatus());
     }
 
     /**
      * 클라이언트로부터 넘어오는 값 Validation Exception 핸들링
      */
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity onException(Exception exception){
-        return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getMessage(),null), null, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity onValidationException(Exception exception){
+        return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getMessage(),null), null, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity onException(Exception exception){
+        return new ResponseEntity<>(BaseResponse.onFailure(500, exception.getMessage(),null), null, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

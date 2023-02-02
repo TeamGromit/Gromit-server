@@ -6,10 +6,7 @@ import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.UserAccount;
-import com.example.gromit.exception.ErrorCode;
-import com.example.gromit.repository.UserCharacterRepository;
 import com.example.gromit.service.UserAccountService;
-import com.example.gromit.service.UserCharacterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -45,18 +42,16 @@ public class UserAccountController {
      * @return
      */
     @PostMapping
-    public BaseResponse<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
+    public BaseResponse<SignUpResponseDto> signUp(@Validated @RequestBody SignUpRequestDto signUpRequestDto, BindingResult bindingResult) {
         log.info("sign-up");
 
         if (bindingResult.hasErrors()) {
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
-            return BaseResponse.onFailure(CONTROLLER_COMMON_ERROR_CODE.getCode(), objectError.getDefaultMessage(), null);
+            return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
         }
 
         // 회원 가입 비즈니스 로직
         SignUpResponseDto result = userAccountService.signUp(signUpRequestDto);
-
-
 
         return BaseResponse.onSuccess(result);
     }
@@ -68,7 +63,6 @@ public class UserAccountController {
     public BaseResponse<GithubNicknameResponseDto> checkGithubNickname(@PathVariable(value = "nickname",required = false)
                                                                            @NotBlank(message = "깃허브 닉네임을 입력해주세요.") String githubNickname) {
         log.info(githubNickname);
-        System.out.println("githubNickname = " + githubNickname);
         GithubNicknameResponseDto result = userAccountService.getGithubUser(githubNickname);
         return BaseResponse.onSuccess(result);
     }

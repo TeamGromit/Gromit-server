@@ -1,5 +1,6 @@
 package com.example.gromit.dto.challenge.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
@@ -13,7 +14,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-//@Validated
 @ToString
 public class PostChallengeRequest {
 
@@ -34,6 +34,7 @@ public class PostChallengeRequest {
     private int recruits;
 
     @NotNull
+    @JsonProperty("isSuccessful")
     private boolean isPassword;
 
     private String password;

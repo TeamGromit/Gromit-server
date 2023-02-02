@@ -14,6 +14,8 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
-    Optional<Member> findByChallengeIdAndUserAccountId(Long challengeId, Long userAccountId);
+
     List<Member> findAllByChallengeId(Long challengeId);
+
+    Optional<Member> findByChallengeIdAndUserAccountId(Long challengeId, Long userAccountId);
 }
