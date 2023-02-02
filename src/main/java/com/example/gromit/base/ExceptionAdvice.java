@@ -18,7 +18,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(BaseException.class)
     public ResponseEntity onBaseException(BaseException exception){
-        return new ResponseEntity<>(BaseResponse.onFailure(400, exception.getResponseMessage(), exception.getData()), null, exception.getHttpStatus());
+        return new ResponseEntity<>(BaseResponse.onFailure(exception.getErrorCode().getCode(), exception.getResponseMessage(), exception.getData()), null, exception.getHttpStatus());
     }
 
     /**

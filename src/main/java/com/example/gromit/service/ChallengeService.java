@@ -77,6 +77,16 @@ public class ChallengeService {
     public void delete(Long id, UserAccount userAccount) {
         Challenge challenge = challengeRepository.findById(id).get();
 
+        //유저와 챌린지 방장이 다를 경우
+        if (!isSameUserAndChallengeHost(userAccount, challenge)) {
+            throw new BadRequestException(NOT_CHALLENGE_MASTER);
+        }
+
+        //챌린지가 아직 진행중인 경우
+        if (isChallengeRunning(challenge)) {
+            throw new BadRequestException(CHALLENGE_IN_PROGRESS);
+        }
+
         //챌린지에 속한 참가자들을 (방장 포함) 모두 삭제
         memberRepository.findAllByChallengeId(id)
                 .stream()
@@ -88,6 +98,14 @@ public class ChallengeService {
         //챌린지 삭제
         challenge.setDeleted(true);
         challengeRepository.save(challenge);
+    }
+
+    private static boolean isSameUserAndChallengeHost(UserAccount userAccount, Challenge challenge) {
+        return userAccount.equals(challenge.getUserAccount());
+    }
+
+    private static boolean isChallengeRunning(Challenge challenge) {
+        return LocalDate.now().compareTo(challenge.getStartDate()) >= 0 && LocalDate.now().compareTo(challenge.getEndDate()) <= 0;
     }
 
     public Challenge findById(Long challengeId){

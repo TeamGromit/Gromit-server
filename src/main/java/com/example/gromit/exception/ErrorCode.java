@@ -18,7 +18,7 @@ public enum ErrorCode {
     _UNAUTHORIZED(2002, "권한이 없습니다.", UNAUTHORIZED),
 
     _METHOD_NOT_ALLOWED(2003, "지원하지 않는 Http Method 입니다.", METHOD_NOT_ALLOWED),
-    CONTROLLER_COMMON_ERROR_CODE(2004, null, null),
+    CONTROLLER_COMMON_ERROR_CODE(400, null, null),
 
     /**
      * 3000 : 유저 관련 오류
