@@ -1,9 +1,11 @@
 package com.example.gromit.service;
 
+import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
 import com.example.gromit.entity.Challenge;
+import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.NotFoundException;
@@ -12,13 +14,13 @@ import com.example.gromit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.example.gromit.exception.ErrorCode.NOT_FOUND_CHALLENGE;
-import static com.example.gromit.exception.ErrorCode.NOT_VALID_CHALLENGE_PASSWORD;
+import static com.example.gromit.exception.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -104,5 +106,37 @@ public class ChallengeService {
                 challenge.getGoal()
         );
         return getChallengeRes;
+    }
+
+    public void saveMember(Long challengeId, UserAccount userAccount) {
+
+        Challenge challenge = challengeRepository.findById(challengeId).get();
+
+        // 참가 임원 초과
+        if (challenge.getMembers().size() == challenge.getRecruits()) {
+            throw new BadRequestException(MEMBER_OVERSTAFFED);
+        }
+
+//         이미 챌린지에 참가한 멤버
+        challenge.getMembers()
+                .stream()
+                .filter(member -> member.getUserAccount().equals(userAccount))
+                .findFirst()
+                .ifPresent(member -> {
+                    throw new BadRequestException(DUPLICATED_MEMBER);
+                });
+
+        int commits=0;
+        if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
+            commits = userAccount.getCommits();
+        }
+        Member member = Member.of(
+                challenge,
+                userAccount,
+                commits,
+                false
+        );
+
+        memberRepository.save(member);
     }
 }

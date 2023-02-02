@@ -6,6 +6,8 @@ import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.exception.BadRequestException;
+import com.example.gromit.repository.ChallengeRepository;
 import com.example.gromit.service.ChallengeService;
 import com.example.gromit.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,6 @@ import static com.example.gromit.exception.ErrorCode.CONTROLLER_COMMON_ERROR_COD
 @RequestMapping("/challenges")
 @RestController
 public class ChallengeController {
-
     private final ChallengeService challengeService;
 
     private final MemberService memberService;
@@ -101,5 +102,15 @@ public class ChallengeController {
     public BaseResponse<GetChallengeResponse> challenge(@PathVariable Long challengeId, @AuthenticationPrincipal UserAccount userAccount) {
         GetChallengeResponse result = challengeService.findChallengeById(challengeId);
         return BaseResponse.onSuccess(result);
+    }
+
+    /**
+     * 챌린지 참가 API (멤버 추가 )
+     */
+    @PostMapping("/{challengeId}")
+    public BaseResponse<String> postMember(@PathVariable Long challengeId, @AuthenticationPrincipal UserAccount userAccount) {
+        Challenge challenge = challengeService.findById(challengeId);
+        challengeService.saveMember(challengeId, userAccount);
+        return BaseResponse.onSuccess("챌린지에 참가했습니다.");
     }
 }
