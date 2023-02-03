@@ -206,9 +206,6 @@ public class UserAccountService {
                 .filter(m -> m.getCommits() < m.getChallenge().getGoal())
                 .collect(Collectors.toConcurrentMap(m -> m.getId(), m -> m.getCommits()));
 
-        memberInfo.entrySet()
-                .stream()
-                .forEach(m -> System.out.println(m.getKey() + "  " + m.getValue()));
 
         renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit, memberInfo);
     }
