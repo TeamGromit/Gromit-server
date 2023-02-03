@@ -5,6 +5,7 @@ import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.Characters;
+import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
 import com.example.gromit.exception.BaseException;
@@ -32,6 +33,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 import static com.example.gromit.exception.ErrorCode.*;
 
@@ -191,7 +196,24 @@ public class UserAccountService {
         int oldTodayCommit = userAccount.getTodayCommit();
         int totalCommit = userAccount.getCommits();
         int todayCommit = 0;
+        todayCommit = getTodayCommitByGithub(now, gitHubName, todayCommit);
 
+        //챌린지 정보와 해당 유저의 멤버 커밋 수 저장
+
+        ConcurrentMap<Long, Integer> memberInfo = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
+                .stream()
+                .filter(m -> challengeRepository.existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(m.getChallenge().getId(), time, time))
+                .filter(m -> m.getCommits() < m.getChallenge().getGoal())
+                .collect(Collectors.toConcurrentMap(m -> m.getId(), m -> m.getCommits()));
+
+        memberInfo.entrySet()
+                .stream()
+                .forEach(m -> System.out.println(m.getKey() + "  " + m.getValue()));
+
+        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit, memberInfo);
+    }
+
+    private static int getTodayCommitByGithub(String now, String gitHubName, int todayCommit) {
         String url = "https://github.com/users/" + gitHubName + "/contributions";
 
         try {
@@ -215,19 +237,30 @@ public class UserAccountService {
                 todayCommit = Integer.parseInt(commitText);
 
             }
-//            System.out.println("todayCommit = " + todayCommit);
 
         } catch (NotFoundException e) {
             System.out.println(e.getMessage());
         } catch (IOException e) {
             throw new IllegalArgumentException("크롤링 서버 에러 ");
         }
-
-        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit);
+        return todayCommit;
     }
 
-    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit) {
+    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit, Map<Long, Integer> memberInfo) {
+
         if (oldTodayCommit != todayCommit) {
+
+//             새로고침 누른 유저에 해당하는 참여 챌린지 커밋 갱신
+            memberInfo.forEach((memberId, memberCommits) -> {
+                int newCommits = memberCommits + todayCommit - oldTodayCommit;
+
+                Member member = memberRepository.findById(memberId).get();
+
+                member.setCommits(newCommits);
+                memberRepository.save(member);
+            });
+
+            // 새로고침 누른 유저 커밋 갱신
             int newCommits = totalCommit + todayCommit - oldTodayCommit;
             userAccount.reloadCommits(todayCommit, newCommits);
             userAccountRepository.save(userAccount);
