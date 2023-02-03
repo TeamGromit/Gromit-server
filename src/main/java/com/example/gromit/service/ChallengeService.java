@@ -1,6 +1,5 @@
 package com.example.gromit.service;
 
-import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
@@ -9,7 +8,6 @@ import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
-import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
 import com.example.gromit.repository.MemberRepository;
@@ -35,7 +33,7 @@ public class ChallengeService {
 
     public List<GetChallengeGroupResponse> findChallenges() {
 
-        return challengeRepository.findAllByIsDeleted(false)
+        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual(false,LocalDate.now())
                 .stream()
                 .map(GetChallengeGroupResponse::from)
                 .collect(Collectors.toList());
@@ -115,6 +113,9 @@ public class ChallengeService {
         return challengeRepository.findById(challengeId).get();
     }
 
+    /**
+     * 단일 챌린지 조회 비즈니스 로직
+     */
     public GetChallengeResponse findChallengeById(Long challengeId) {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
@@ -129,6 +130,9 @@ public class ChallengeService {
         return getChallengeRes;
     }
 
+    /**
+     * 챌린지 저장시 멤버 저장 비즈니스 로직
+     */
     public void saveMember(Long challengeId, UserAccount userAccount) {
 
         Challenge challenge = challengeRepository.findById(challengeId).get();
@@ -149,7 +153,7 @@ public class ChallengeService {
 
         int commits=0;
         if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
-            commits = userAccount.getCommits();
+            commits = userAccount.getTodayCommit();
         }
 
         Member member = Member.of(
