@@ -38,6 +38,7 @@ public enum ErrorCode {
     /**
      * 4000 : character 관련 오류
      */
+    NOT_FOUND_CHARACTER(4001,"캐릭터를 찾을 수 없습니다.",BAD_REQUEST),
 
     /**
      * 5000 : challenge 관련 오류

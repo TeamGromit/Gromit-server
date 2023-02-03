@@ -5,6 +5,7 @@ import com.example.gromit.dto.home.response.ShowHomeResponse;
 import com.example.gromit.entity.Characters;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.entity.UserCharacter;
+import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.CharactersRepository;
 import com.example.gromit.repository.UserAccountRepository;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.example.gromit.exception.ErrorCode.NOT_FOUND_CHARACTER;
 
 @RequiredArgsConstructor
 @Service
@@ -68,7 +71,9 @@ public class UserCharacterService {
         Long userId = user.getId();
         UserAccount userAccount = userAccountRepository.findById(userId).get();
 
-        UserCharacter currentCharacter = userCharacterRepository.findByUserAccountIdAndStatusAndIsDeleted(userId, 0, false).get();
+        UserCharacter currentCharacter = userCharacterRepository
+                .findByUserAccountIdAndStatusAndIsDeleted(userId, 0, false)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CHARACTER));
 
         int totalCommit = userAccount.getCommits();
         int goal = currentCharacter.getCharacters().getGoal();
