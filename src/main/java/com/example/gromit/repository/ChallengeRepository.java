@@ -14,4 +14,6 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
     List<Challenge> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
 
     List<Challenge> findAllByIsDeletedAndStartDateGreaterThanEqual (boolean isDeleted, LocalDate now);
+
+    boolean existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual  (Long id, LocalDate now1, LocalDate now2);
 }

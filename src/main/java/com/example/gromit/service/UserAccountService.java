@@ -4,9 +4,7 @@ import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
-import com.example.gromit.entity.Characters;
-import com.example.gromit.entity.UserAccount;
-import com.example.gromit.entity.UserCharacter;
+import com.example.gromit.entity.*;
 import com.example.gromit.exception.BaseException;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
@@ -23,6 +21,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +30,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.*;
 
 import static com.example.gromit.exception.ErrorCode.*;
 
@@ -192,6 +191,21 @@ public class UserAccountService {
         int totalCommit = userAccount.getCommits();
         int todayCommit = 0;
 
+        //멤버 커밋 추가
+        List<Member> members = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false);
+
+        //챌린지 정보와 해당 유저의 멤버 커밋 수 저장
+        HashMap<Long, Integer> memberInfo = new HashMap<Long,Integer>();
+
+        for (Member m: members) {
+            //날짜 비교 - 챌린지가 진행중인 경우에만 커밋을 갱신하도록
+            boolean result = challengeRepository.existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(m.getChallenge().getId(), time, time);
+
+            if(result && m.getCommits() < m.getChallenge().getGoal()) {
+                memberInfo.put(m.getId(), m.getCommits());
+            }
+        }
+
         String url = "https://github.com/users/" + gitHubName + "/contributions";
 
         try {
@@ -223,10 +237,21 @@ public class UserAccountService {
             throw new IllegalArgumentException("크롤링 서버 에러 ");
         }
 
-        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit);
+        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit, memberInfo);
     }
 
-    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit) {
+    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit, HashMap<Long, Integer> memberInfo) {
+        memberInfo.forEach((id, memberCommits)->{
+            if (oldTodayCommit != todayCommit) {
+                int newCommits = memberCommits + todayCommit - oldTodayCommit;
+
+                Member member = memberRepository.findById(id).get();
+
+                member.setCommits(newCommits);
+                memberRepository.save(member);
+            }
+        });
+
         if (oldTodayCommit != todayCommit) {
             int newCommits = totalCommit + todayCommit - oldTodayCommit;
             userAccount.reloadCommits(todayCommit, newCommits);
