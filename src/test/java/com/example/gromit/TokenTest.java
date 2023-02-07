@@ -21,5 +21,8 @@ public class TokenTest {
 
         String token2 = jwtService.encodeJwtToken(new TokenDto(2L));
         System.out.println(token2);
+
+        String token3 = jwtService.encodeJwtToken(new TokenDto(6L));
+        System.out.println(token3);
     }
 }

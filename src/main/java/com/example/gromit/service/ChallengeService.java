@@ -1,24 +1,26 @@
 package com.example.gromit.service;
 
-import com.example.gromit.base.BaseResponse;
 import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
-import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.repository.ChallengeRepository;
 import com.example.gromit.repository.MemberRepository;
+import com.example.gromit.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,7 +37,7 @@ public class ChallengeService {
 
     public List<GetChallengeGroupResponse> findChallenges() {
 
-        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual (false, LocalDate.now())
+        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual(false, LocalDate.now())
                 .stream()
                 .map(GetChallengeGroupResponse::from)
                 .collect(Collectors.toList());
@@ -115,6 +117,9 @@ public class ChallengeService {
         return challengeRepository.findById(challengeId).get();
     }
 
+    /**
+     * 단일 챌린지 조회 비즈니스 로직
+     */
     public GetChallengeResponse findChallengeById(Long challengeId) {
         Challenge challenge = challengeRepository.findById(challengeId)
                 .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
@@ -124,11 +129,15 @@ public class ChallengeService {
                 challenge.getStartDate(),
                 challenge.getEndDate(),
                 challenge.getUserAccount().getNickname(),
-                challenge.getGoal()
+                challenge.getGoal(),
+                challenge.isPassword()
         );
         return getChallengeRes;
     }
 
+    /**
+     * 챌린지 저장시 멤버 저장 비즈니스 로직
+     */
     public void saveMember(Long challengeId, UserAccount userAccount) {
 
         Challenge challenge = challengeRepository.findById(challengeId).get();
@@ -149,7 +158,7 @@ public class ChallengeService {
 
         int commits=0;
         if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
-            commits = userAccount.getCommits();
+            commits = userAccount.getTodayCommit();
         }
 
         Member member = Member.of(
@@ -171,5 +180,70 @@ public class ChallengeService {
 
     private static boolean isCorrectChallengePassword(PostChallengePasswordRequest postChallengePasswordRequest, Challenge challenge) {
         return Objects.equals(challenge.getPassword(), postChallengePasswordRequest.getPassword());
+    }
+
+    /**
+     * 참여 챌린지 목록 비즈니스 로직
+     */
+    public List<GetMyChallengeGroupResponse> findMyChallengeGroup(UserAccount userAccount) {
+
+        return memberRepository.findAllByIsDeletedAndUserAccountId(false, userAccount.getId())
+                .stream()
+                .map(GetMyChallengeGroupResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 참여 챌린지 상세 조회 비즈니스 로직
+     */
+    public GetMyChallengeResponse findMyChallengeById(Long challengeId, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
+
+        //챌린지에 참가하지 않았을 경우
+        challenge.getMembers()
+                .stream()
+                .filter(member -> member.getUserAccount().equals(userAccount))
+                .findAny()
+                .ifPresentOrElse(member -> member.getUserAccount().equals(userAccount), () -> {
+                    throw new BadRequestException(NOT_PARTICIPATE);
+                });
+
+        List<MemberRepository.MemberList> members = memberRepository.findAllByChallengeIdAndIsDeleted(challengeId, false);
+
+        GetMyChallengeResponse getMyChallengeRes = GetMyChallengeResponse.of(
+                challenge.getTitle(),
+                challenge.isPassword(),
+                challenge.getUserAccount().getNickname(),
+                challenge.getGoal(),
+                challenge.getStartDate(),
+                challenge.getEndDate(),
+                challenge.getMembers().size(),
+                challenge.getRecruits(),
+                members
+        );
+        return getMyChallengeRes;
+    }
+
+    /**
+     * 챌린지 탈퇴 (멤버)
+     */
+    public void leave(Long challengeId, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
+
+        //챌린지에 참가하지 않았을 경우
+        challenge.getMembers()
+                .stream()
+                .filter(member -> member.getUserAccount().equals(userAccount))
+                .findAny()
+                .ifPresentOrElse(member -> member.getUserAccount().equals(userAccount), () -> {
+                    throw new BadRequestException(NOT_PARTICIPATE);
+                });
+
+        Member member = memberRepository.findByChallengeIdAndUserAccountId(challengeId, userAccount.getId()).get();
+
+        member.setDeleted(true);
+        memberRepository.save(member);
     }
 }

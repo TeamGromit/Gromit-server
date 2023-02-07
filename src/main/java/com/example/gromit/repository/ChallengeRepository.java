@@ -1,7 +1,6 @@
 package com.example.gromit.repository;
 
 import com.example.gromit.entity.Challenge;
-import com.example.gromit.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
@@ -13,7 +12,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findAllByUserAccountIdAndIsDeleted(Long userAccountId, boolean isDeleted);
 
-    List<Challenge> findAllByIsDeletedAndStartDateGreaterThanEqual (boolean isDeleted, LocalDate now);
+    List<Challenge> findAllByIsDeletedAndStartDateGreaterThanEqual(boolean isDeleted, LocalDate now);
 
-    boolean existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual  (Long id, LocalDate now1, LocalDate now2);
+    List<Challenge> findAllByIsDeleted(boolean isDeleted);
+
+    boolean existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual (Long challengeId, LocalDate now1, LocalDate now2);
 }

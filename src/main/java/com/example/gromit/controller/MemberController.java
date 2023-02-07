@@ -22,10 +22,10 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PatchMapping("/challenges/mem/{id}") //삭제와 url를 동일하게 해도 되는지..?
-    public BaseResponse<String> leaveChallenge(@AuthenticationPrincipal UserAccount userAccount,
-                           @PathVariable("id") Long id) {
-        memberService.leave(id, userAccount);
-        return BaseResponse.onSuccess("챌린지 탈퇴를 성공했습니다.");
-    }
+//    @PatchMapping("/challenges/my/{challengeId}")
+//    public BaseResponse<String> leaveChallenge(@AuthenticationPrincipal UserAccount userAccount,
+//                                               @PathVariable("challengeId") Long challengeId) {
+//        memberService.leave(challengeId, userAccount);
+//        return BaseResponse.onSuccess("챌린지 탈퇴를 성공했습니다.");
+//    }
 }

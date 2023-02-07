@@ -5,6 +5,8 @@ import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
@@ -33,7 +35,6 @@ import static com.example.gromit.exception.ErrorCode.CONTROLLER_COMMON_ERROR_COD
 @RestController
 public class ChallengeController {
     private final ChallengeService challengeService;
-
     private final MemberService memberService;
 
     /**
@@ -41,7 +42,7 @@ public class ChallengeController {
      */
     @GetMapping
     public BaseResponse<List<GetChallengeGroupResponse>> challenges(@AuthenticationPrincipal UserAccount userAccount){
-        List<GetChallengeGroupResponse> result= challengeService.findChallenges();
+        List<GetChallengeGroupResponse> result = challengeService.findChallenges();
         return BaseResponse.onSuccess(result);
     }
 
@@ -107,5 +108,33 @@ public class ChallengeController {
 
         challengeService.comparePassword(challengeId, postChallengePasswordRequest);
         return BaseResponse.onSuccess("패스워드 인증에 성공했습니다.");
+    }
+
+    /**
+     * 참여 챌린지 목록 API
+     */
+    @GetMapping("/my")
+    public BaseResponse<List<GetMyChallengeGroupResponse>> myChallengeGroup(@AuthenticationPrincipal UserAccount userAccount){
+        List<GetMyChallengeGroupResponse> result = challengeService.findMyChallengeGroup(userAccount);
+        return BaseResponse.onSuccess(result);
+    }
+
+    /**
+     * 참여 챌린지 상세 조회 API
+     */
+    @GetMapping("/my/{challengeId}")
+    public BaseResponse<GetMyChallengeResponse> myChallenge(@PathVariable Long challengeId, @AuthenticationPrincipal UserAccount userAccount) {
+        GetMyChallengeResponse result = challengeService.findMyChallengeById(challengeId, userAccount);
+        return BaseResponse.onSuccess(result);
+    }
+
+    /**
+     * 챌린지 탈퇴 API (방장이 아닌 참가자일 경우)
+     */
+    @PatchMapping("/my/{challengeId}")
+    public BaseResponse<String> leaveChallenge(@AuthenticationPrincipal UserAccount userAccount,
+                                               @PathVariable("challengeId") Long challengeId) {
+        challengeService.leave(challengeId, userAccount);
+        return BaseResponse.onSuccess("챌린지 탈퇴에 성공했습니다.");
     }
 }

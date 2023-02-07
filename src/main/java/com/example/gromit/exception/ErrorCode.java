@@ -38,6 +38,7 @@ public enum ErrorCode {
     /**
      * 4000 : character 관련 오류
      */
+    NOT_FOUND_CHARACTER(4001,"캐릭터를 찾을 수 없습니다.",BAD_REQUEST),
 
     /**
      * 5000 : challenge 관련 오류
@@ -47,6 +48,7 @@ public enum ErrorCode {
     DUPLICATED_MEMBER(5003, "이미 참가한 챌린지 입니다.", BAD_REQUEST),
     INCORRECT_PASSWORD(5004, "비밀번호가 맞지 않습니다.", BAD_REQUEST),
     NOT_FOUND_CHALLENGE(5005, "해당 챌린지를 찾을 수 없습니다.", BAD_REQUEST),
+    NOT_PARTICIPATE(5006, "참여하지 않은 챌린지입니다.", BAD_REQUEST),
 
 
     NOT_CHALLENGE_MASTER(5010, "방장이 아닌 챌린지는 삭제할 수 없습니다.", BAD_REQUEST),

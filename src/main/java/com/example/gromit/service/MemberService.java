@@ -18,9 +18,10 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public void leave(Long id, UserAccount userAccount) {
-        Member member = memberRepository.findByChallengeIdAndUserAccountId(id, userAccount.getId()).get();
-
-        member.setDeleted(true);
-    }
+//    public void leave(Long id, UserAccount userAccount) {
+//        Member member = memberRepository.findByChallengeIdAndUserAccountId(id, userAccount.getId()).get();
+//
+//        member.setDeleted(true);
+//        memberRepository.save(member);
+//    }
 }
