@@ -1,6 +1,5 @@
 package com.example.gromit.dto.user.response;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

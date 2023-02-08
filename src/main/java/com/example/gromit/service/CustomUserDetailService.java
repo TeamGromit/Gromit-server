@@ -1,7 +1,6 @@
 package com.example.gromit.service;
 
 import com.example.gromit.exception.NotFoundException;
-import com.example.gromit.exception.UnauthorizedException;
 import com.example.gromit.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

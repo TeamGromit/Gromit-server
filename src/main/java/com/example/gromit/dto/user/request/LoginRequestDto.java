@@ -3,7 +3,6 @@ package com.example.gromit.dto.user.request;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter

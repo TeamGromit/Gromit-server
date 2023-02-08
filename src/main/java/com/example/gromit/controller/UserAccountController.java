@@ -15,13 +15,11 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-
 import java.time.LocalDate;
 
-import static com.example.gromit.exception.ErrorCode.*;
+import static com.example.gromit.exception.ErrorCode.DUPLICATED_NICKNAME;
 
 
 @Slf4j
