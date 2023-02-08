@@ -5,6 +5,7 @@ import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
 import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
@@ -190,4 +191,34 @@ public class ChallengeService {
     }
 
 
+    /**
+     * 참여 챌린지 상세 조회 비즈니스 로직
+     */
+    public GetMyChallengeResponse findMyChallengeById(Long challengeId, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
+
+        //챌린지에 참가하지 않았을 경우
+        challenge.getMembers()
+                .stream()
+                .filter(member -> member.getUserAccount().equals(userAccount))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException(NOT_PARTICIPATE_CHALLENGE));
+
+        List<MemberRepository.MemberList> members = memberRepository.findAllByChallengeIdAndIsDeleted(challengeId, false);
+
+        GetMyChallengeResponse getMyChallengeRes = GetMyChallengeResponse.of(
+                challenge.getTitle(),
+                challenge.isPassword(),
+                challenge.getUserAccount().getNickname(),
+                challenge.getGoal(),
+                challenge.getStartDate(),
+                challenge.getEndDate(),
+                challenge.getMembers().size(),
+                challenge.getRecruits(),
+                members
+        );
+        return getMyChallengeRes;
+    }
 }
+

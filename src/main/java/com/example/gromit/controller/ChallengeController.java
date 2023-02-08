@@ -6,6 +6,7 @@ import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
 import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
@@ -116,6 +117,15 @@ public class ChallengeController {
     @GetMapping("/my")
     public BaseResponse<List<GetMyChallengeGroupResponse>> myChallengeGroup(@AuthenticationPrincipal UserAccount userAccount){
         List<GetMyChallengeGroupResponse> result = challengeService.findMyChallengeGroup(userAccount);
+        return BaseResponse.onSuccess(result);
+    }
+
+    /**
+     * 참여 챌린지 상세 조회 API
+     */
+    @GetMapping("/my/{challengeId}")
+    public BaseResponse<GetMyChallengeResponse> myChallenge(@PathVariable Long challengeId, @AuthenticationPrincipal UserAccount userAccount) {
+        GetMyChallengeResponse result = challengeService.findMyChallengeById(challengeId, userAccount);
         return BaseResponse.onSuccess(result);
     }
 }
