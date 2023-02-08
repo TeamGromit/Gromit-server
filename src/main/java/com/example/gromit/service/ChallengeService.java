@@ -220,5 +220,25 @@ public class ChallengeService {
         );
         return getMyChallengeRes;
     }
+
+    /**
+     * 챌린지 탈퇴 (멤버)
+     */
+    public void leave(Long challengeId, UserAccount userAccount) {
+        Challenge challenge = challengeRepository.findById(challengeId)
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_CHALLENGE));
+
+        //챌린지에 참가하지 않았을 경우
+        challenge.getMembers()
+                .stream()
+                .filter(member -> member.getUserAccount().equals(userAccount))
+                .findAny()
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_CHALLENGE));
+
+        Member member = memberRepository.findByChallengeIdAndUserAccountId(challengeId, userAccount.getId());
+
+        member.setDeleted(true);
+        memberRepository.save(member);
+    }
 }
 
