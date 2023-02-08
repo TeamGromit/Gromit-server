@@ -4,6 +4,7 @@ import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
@@ -176,4 +177,17 @@ public class ChallengeService {
     private static boolean isCorrectChallengePassword(PostChallengePasswordRequest postChallengePasswordRequest, Challenge challenge) {
         return Objects.equals(challenge.getPassword(), postChallengePasswordRequest.getPassword());
     }
+
+    /**
+     * 참여 챌린지 목록 비즈니스 로직
+     */
+    public List<GetMyChallengeGroupResponse> findMyChallengeGroup(UserAccount userAccount) {
+
+        return memberRepository.findAllByIsDeletedAndUserAccountId(false, userAccount.getId())
+                .stream()
+                .map(GetMyChallengeGroupResponse::from)
+                .collect(Collectors.toList());
+    }
+
+
 }

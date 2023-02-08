@@ -5,6 +5,7 @@ import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
 import com.example.gromit.dto.challenge.response.GetChallengeResponse;
+import com.example.gromit.dto.challenge.response.GetMyChallengeGroupResponse;
 import com.example.gromit.entity.Challenge;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
@@ -107,5 +108,14 @@ public class ChallengeController {
 
         challengeService.comparePassword(challengeId, postChallengePasswordRequest);
         return BaseResponse.onSuccess("패스워드 인증에 성공했습니다.");
+    }
+
+    /**
+     * 참여 챌린지 목록 API
+     */
+    @GetMapping("/my")
+    public BaseResponse<List<GetMyChallengeGroupResponse>> myChallengeGroup(@AuthenticationPrincipal UserAccount userAccount){
+        List<GetMyChallengeGroupResponse> result = challengeService.findMyChallengeGroup(userAccount);
+        return BaseResponse.onSuccess(result);
     }
 }
