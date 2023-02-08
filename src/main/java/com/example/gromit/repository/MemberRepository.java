@@ -6,7 +6,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 @RepositoryRestResource

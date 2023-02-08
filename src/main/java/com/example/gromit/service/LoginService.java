@@ -6,7 +6,6 @@ import com.example.gromit.dto.user.response.LoginResponseDto;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.BaseException;
-import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.repository.UserAccountRepository;
 import com.google.gson.*;
 import io.jsonwebtoken.Claims;
@@ -30,8 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.example.gromit.exception.ErrorCode.*;
-import static com.example.gromit.exception.ErrorCode.APPLE_SERVER_ERROR;
-import static com.example.gromit.exception.ErrorCode.FAIL_TO_MAKE_APPLE_PUBLIC_KEY;
 
 @RequiredArgsConstructor
 @Service
