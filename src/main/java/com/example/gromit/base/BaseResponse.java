@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static com.example.gromit.base.BaseResponseStatus.SUCCESS;
 
 @Getter
 @AllArgsConstructor
@@ -23,13 +22,6 @@ public class BaseResponse<T> {
     /**
      * 요청에 성공한 경우
      */
-    public BaseResponse(T result) {
-        this.isSuccess = SUCCESS.isSuccess();
-        this.message = SUCCESS.getMessage();
-        this.code = SUCCESS.getCode();
-        this.result = result;
-    }
-
     public static <T> BaseResponse<T> onSuccess(T result){
         return new BaseResponse<>(1000, true, "요청에 성공하였습니다.", result);
     }
@@ -38,13 +30,6 @@ public class BaseResponse<T> {
     /**
      * 요청에 실패한 경우
      */
-
-    public BaseResponse(BaseResponseStatus status) {
-        this.isSuccess = status.isSuccess();
-        this.message = status.getMessage();
-        this.code = status.getCode();
-    }
-
     public static <T> BaseResponse<T> onFailure(int code,String message,T result) {
         return new BaseResponse<>(code, false, message,result);
     }
