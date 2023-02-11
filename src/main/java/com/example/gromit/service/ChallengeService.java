@@ -43,12 +43,11 @@ public class ChallengeService {
 
     public Challenge saveChallenge(UserAccount userAccount, PostChallengeRequest postChallengeRequest) {
 
-        if(postChallengeRequest.isPassword()){
+        if(postChallengeRequest.isPasswordSet()){
             String password= postChallengeRequest.getPassword();
-            if(isValidPassword(password)){
+            if(!isValidPassword(password)){
                 throw new BadRequestException(NOT_VALID_CHALLENGE_PASSWORD);
             }
-
         }
 
         Challenge challenge = Challenge.of(
@@ -59,7 +58,7 @@ public class ChallengeService {
                 postChallengeRequest.getGoal(),
                 postChallengeRequest.getRecruits(),
                 postChallengeRequest.getPassword(),
-                postChallengeRequest.isPassword(),
+                postChallengeRequest.isPasswordSet(),
                 false
         );
 
