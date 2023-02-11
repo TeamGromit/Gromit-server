@@ -48,8 +48,8 @@ public class ChallengeController {
      */
     @PostMapping
     public BaseResponse<String> postChallenge(@AuthenticationPrincipal UserAccount userAccount,
-                                              @RequestBody PostChallengeRequest postChallengeRequest,
-                                              @Valid BindingResult bindingResult){
+                                              @Valid @RequestBody PostChallengeRequest postChallengeRequest,
+                                              BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();

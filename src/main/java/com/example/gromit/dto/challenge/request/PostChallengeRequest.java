@@ -12,8 +12,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
 public class PostChallengeRequest {
 
     @NotNull
@@ -33,12 +31,10 @@ public class PostChallengeRequest {
     private int recruits;
 
     @NotNull
-    @JsonProperty("isSuccessful")
-    private boolean isPassword;
+    @JsonProperty("isPassword")
+    private boolean isPasswordSet;
 
     private String password;
-
-
 
 
 }
