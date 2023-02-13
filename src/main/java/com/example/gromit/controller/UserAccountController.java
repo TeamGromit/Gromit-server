@@ -1,6 +1,7 @@
 package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.user.request.ChangeNicknameRequestDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
@@ -97,5 +98,22 @@ public class UserAccountController {
         userAccountService.reloadCommits(userAccount, LocalDate.now());
         return BaseResponse.onSuccess("커밋 새로고침에 성공했습니다.");
     }
+
+    /**
+     * 닉네임 변경 API
+     */
+    @PatchMapping("/change/nickname")
+    public BaseResponse<NicknameResponseDto> changeNickname(@AuthenticationPrincipal UserAccount userAccount,
+                                               @Validated @RequestBody ChangeNicknameRequestDto changeNicknameRequestDto,BindingResult bindingResult){
+
+        if(bindingResult.hasErrors()){
+            ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
+            return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
+        }
+
+        NicknameResponseDto result = userAccountService.changeNickname(userAccount, changeNicknameRequestDto);
+        return BaseResponse.onSuccess(result);
+    }
+
 
 }
