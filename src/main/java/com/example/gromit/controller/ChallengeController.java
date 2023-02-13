@@ -97,6 +97,7 @@ public class ChallengeController {
                                                  @AuthenticationPrincipal UserAccount userAccount,
                                                  @Validated @RequestBody PostChallengePasswordRequest postChallengePasswordRequest, BindingResult bindingResult) {
 
+        System.out.println("challengeId = " + challengeId);
 
         if (bindingResult.hasErrors()) {
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();

@@ -1,8 +1,10 @@
 package com.example.gromit.service;
 
 import com.example.gromit.dto.user.TokenDto;
+import com.example.gromit.dto.user.request.ChangeNicknameRequestDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
+import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
@@ -281,5 +283,12 @@ public class UserAccountService {
         userAccount.setCommits(newCommits);
         userAccountRepository.save(userAccount);
         return newCommits;
+    }
+
+    public NicknameResponseDto changeNickname(UserAccount userAccount, ChangeNicknameRequestDto changeNicknameRequestDto) {
+        UserAccount user = userAccountRepository.findById(userAccount.getId()).get();
+        user.setNickname(changeNicknameRequestDto.getNickname());
+        userAccountRepository.save(user);
+        return NicknameResponseDto.of(changeNicknameRequestDto.getNickname());
     }
 }
