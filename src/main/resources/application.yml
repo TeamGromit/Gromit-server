@@ -13,12 +13,16 @@ logging:
     org.springframework.web.servlet: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace # jpa 쿼리 로그를 debug 모드로 관찰 가능 ( bing parameter 를 보여줌 )
 
-spring:
-  profiles:
-    include: aws
+jwt:
+  secret: ${JWT_SECRET}
 
+spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${RDS_URL}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+
 
   jpa:
     defer-datasource-initialization: false  #테스트용 데이터베이스를 만들 수 있게 해줌 (data.sql)
