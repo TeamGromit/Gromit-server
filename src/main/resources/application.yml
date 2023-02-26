@@ -13,15 +13,17 @@ logging:
     org.springframework.web.servlet: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace # jpa 쿼리 로그를 debug 모드로 관찰 가능 ( bing parameter 를 보여줌 )
 
-jwt:
-  secret: ${JWT_SECRET}
+#jwt:
+#  secret: ${JWT_SECRET}
 
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${RDS_URL}
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+  profiles:
+    active: dev
+#  datasource:
+#    url: ${RDS_URL}
+#    username: ${RDS_USERNAME}
+#    password: ${RDS_PASSWORD}
+#    driver-class-name: com.mysql.cj.jdbc.Driver
 
 
   jpa:

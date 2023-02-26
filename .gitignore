@@ -9,6 +9,8 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 /src/main/resources/application-aws.yml
+/src/main/resources/application-dev.yml
+
 /META-INF
 # User-specific stuff
 .idea/**/workspace.xml
