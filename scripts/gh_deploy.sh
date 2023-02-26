@@ -1,12 +1,12 @@
 #!/bin/bash
 PROJECT_NAME="gromit"
 JAR_PATH="/var/www/server/build/libs/*.jar"
-DEPLOY_PATH=/var/www/server/$PROJECT_NAME/
-DEPLOY_LOG_PATH="/var/www/server/$PROJECT_NAME/deploy.log"
-DEPLOY_ERR_LOG_PATH="/var/www/server/$PROJECT_NAME/deploy_err.log"
-APPLICATION_LOG_PATH="/var/www/server/$PROJECT_NAME/application.log"
+DEPLOY_PATH=/var/www/server/build/libs/
+DEPLOY_LOG_PATH="/var/www/server/deploy.log"
+DEPLOY_ERR_LOG_PATH="/var/www/server/deploy_err.log"
+APPLICATION_LOG_PATH="/var/www/server/application.log"
 BUILD_JAR=$(ls $JAR_PATH)
-JAR_NAME=$(basename $BUILD_JAR)
+JAR_NAgME=$(basename $BUILD_JAR)
 
 echo "===== 배포 시작 : $(date +%c) =====" >> $DEPLOY_LOG_PATH
 
