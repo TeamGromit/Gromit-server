@@ -19,7 +19,7 @@ spring:
   jpa:
     defer-datasource-initialization: false  #테스트용 데이터베이스를 만들 수 있게 해줌 (data.sql)
     hibernate:
-      ddl-auto: update # entity class 를 자동으로 create 해서 db 에 만들어줌
+      ddl-auto: none # entity class 를 자동으로 create 해서 db 에 만들어줌
     show-sql: true # sql 쿼리문을 보여줌
     properties:
       hibernate:
