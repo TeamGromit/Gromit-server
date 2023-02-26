@@ -16,6 +16,10 @@ logging:
 spring:
   profiles:
     include: aws
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     defer-datasource-initialization: false  #테스트용 데이터베이스를 만들 수 있게 해줌 (data.sql)
     hibernate:
@@ -25,9 +29,9 @@ spring:
       hibernate:
         format_sql: false #  여러 줄로 나오는 쿼리문을 한 줄로 포맷팅햇 보여줌
         default_batch_fetch_size: 100 # 연관 관계를 가졌을 때 10개의 쿼리문을 id.in 하나로 select 해서 보여줌
-  h2:
-    console:
-      enabled: false # h2
+#  h2:
+#    console:
+#      enabled: false # h2
   sql:
     init:
       mode: always # data.sql 실행 설정
