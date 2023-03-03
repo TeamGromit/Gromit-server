@@ -6,7 +6,7 @@ DEPLOY_LOG_PATH="/var/www/server/deploy.log"
 DEPLOY_ERR_LOG_PATH="/var/www/server/deploy_err.log"
 APPLICATION_LOG_PATH="/var/www/server/application.log"
 BUILD_JAR=$(ls $JAR_PATH)
-JAR_NAgME=$(basename $BUILD_JAR)
+JAR_NAME=$(basename $BUILD_JAR)
 
 echo "===== 배포 시작 : $(date +%c) =====" >> $DEPLOY_LOG_PATH
 
