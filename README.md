@@ -1,2 +1,7 @@
-처음에 제가 커밋 메시지를 소문자로 시작해서 소문자로 통일하면 좋을꺼 같습니다.
-![img.png](img.png)
+## 시스템 구상도
+
+![image](https://user-images.githubusercontent.com/77667212/224091705-41040fb6-2190-463a-88bb-4c32887c8080.png)
+
+## ERD
+
+![image](https://user-images.githubusercontent.com/77667212/224091864-381d033e-6280-4e0e-acfe-c443821e27e9.png)
