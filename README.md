@@ -1,5 +1,5 @@
 ## 기획서 
-https://makeus-challenge.notion.site/77607a8135524ee19bfe05919a0f247a
+https://docs.google.com/viewer?url=https://github.com/LHS-11/Gromit-server/files/10954918/Gromit.pm_.pdf?raw=True
 
 ## 시스템 구상도
 
