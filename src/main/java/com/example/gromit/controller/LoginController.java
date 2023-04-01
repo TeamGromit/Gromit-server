@@ -33,8 +33,7 @@ public class LoginController {
                                                          LoginRequestDto loginRequestDto, BindingResult bindingResult){
 
         log.info("apple-login");
-
-        System.out.println(loginRequestDto);
+        log.info("LoginRequestDto :" + loginRequestDto);
 
         if(bindingResult.hasErrors()){
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
@@ -54,6 +53,7 @@ public class LoginController {
     @PatchMapping("/refresh")
     public BaseResponse<LoginResponseDto> patchRefreshToken(@AuthenticationPrincipal UserAccount userAccount){
 
+        log.info("Access Token Refresh");
         LoginResponseDto result = loginService.updateUserToken(userAccount);
 
         return BaseResponse.onSuccess(result);
