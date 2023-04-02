@@ -31,8 +31,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@WebMvcTest(LoginController.class)
+@ExtendWith(SpringExtension.class) //
+@WebMvcTest(LoginController.class) // 스프링 애플리케이션 컨텍스트를 제한하여 컨트롤러와 관련된 빈만 로드하므로, 불필요한 빈들이 로드되지 않아 테스트의 속도를 높일 수 있음
 class LoginControllerTest {
 
     @Autowired
@@ -60,7 +60,7 @@ class LoginControllerTest {
     void 애플_로그인_성공_테스트() throws Exception {
         //given
         LoginRequestDto loginRequestDto = new LoginRequestDto("sample_identity_token");
-        LoginResponseDto loginResponseDto = new LoginResponseDto("access_token", "refresh_token");
+        LoginResponseDto loginResponseDto = LoginResponseDto.of("access_token", "refresh_token");
 
         //when
         when(loginService.appleLogin(loginRequestDto)).thenReturn(loginResponseDto);
@@ -89,9 +89,8 @@ class LoginControllerTest {
         userAccount.setId(1L);
         userAccount.setRefreshToken("old_refresh_token");
         //when
-        // 서비스 메서드 스텁 생성
-        LoginResponseDto loginResponseDto = new LoginResponseDto("new_access_token", "new_refresh_token");
-        when(loginService.updateUserToken(any(UserAccount.class))).thenReturn(loginResponseDto);
+        LoginResponseDto loginResponseDto = LoginResponseDto.of("new_access_token", "new_refresh_token");
+        when(loginService.updateUserToken(userAccount)).thenReturn(loginResponseDto);
 
         // 테스트 수행
         mockMvc.perform(patch("/login/refresh")
