@@ -10,10 +10,7 @@ import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BaseException;
 import com.example.gromit.exception.NotFoundException;
-import com.example.gromit.repository.ChallengeRepository;
-import com.example.gromit.repository.MemberRepository;
-import com.example.gromit.repository.UserAccountRepository;
-import com.example.gromit.repository.UserCharacterRepository;
+import com.example.gromit.repository.*;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -88,7 +85,7 @@ public class UserAccountService {
         userAccountRepository.save(user);
 
 
-        return new SignUpResponseDto(user.getId(), newAccessToken, newRefreshToken);
+        return SignUpResponseDto.of(user.getId(), newAccessToken, newRefreshToken);
 
     }
 
