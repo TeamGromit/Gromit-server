@@ -75,10 +75,7 @@ public class UserAccountController {
             @NotBlank(message = "닉네임을 입력해주세요.")
             @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.") String nickname) {
         log.info(nickname);
-
-        if (userAccountService.checkNickname(nickname)) {
-            return BaseResponse.onFailure(DUPLICATED_NICKNAME.getCode(), DUPLICATED_NICKNAME.getMessage(), null);
-        }
+        userAccountService.validateNickname(nickname);
         NicknameResponseDto result = NicknameResponseDto.of(nickname);
         return BaseResponse.onSuccess(result);
     }

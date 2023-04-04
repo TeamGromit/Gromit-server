@@ -3,29 +3,25 @@ package com.example.gromit.service;
 import com.example.gromit.dto.user.TokenDto;
 import com.example.gromit.dto.user.request.ChangeNicknameRequestDto;
 import com.example.gromit.dto.user.request.SignUpRequestDto;
+import com.example.gromit.dto.user.response.FeignResponseInfo;
 import com.example.gromit.dto.user.response.GithubNicknameResponseDto;
 import com.example.gromit.dto.user.response.NicknameResponseDto;
 import com.example.gromit.dto.user.response.SignUpResponseDto;
 import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
+import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.BaseException;
 import com.example.gromit.exception.NotFoundException;
+import com.example.gromit.feign.GithubClient;
 import com.example.gromit.repository.*;
 import lombok.RequiredArgsConstructor;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
@@ -43,6 +39,8 @@ public class UserAccountService {
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
     private final JwtService jwtService;
+
+    private final GithubClient githubClient;
 
     /**
      * 회원가입
@@ -97,44 +95,10 @@ public class UserAccountService {
      * @return 존재하면 githubNickname 존재하지 않으면 null 값
      */
     public GithubNicknameResponseDto getGithubUser(String githubNickname) {
-
-        String githubUrl = "https://api.github.com/users/" + githubNickname;
-
-//        JSONObject responseJson = null;
-
-        try {
-//            url 설정
-            URL url = new URL(githubUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("charset", "utf-8");
-            conn.setDoOutput(true); // 출력 가능 상태로 변경
-            conn.connect();
-
-            // 데이터  읽어오기
-            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = "";
-            while ((line = br.readLine()) != null) {
-                sb.append(line); // StringBuilder 사용시 객체를 계속 생성하지 않고 하나의 객체릂 수정하므로 더 빠름.
-            }
-//            conn.disconnect();
-
-            // JSON Parsing
-            JSONObject jsonObj = (JSONObject) new JSONParser().parse(sb.toString());
-            String nickName = (String) jsonObj.get("login");
-            String img = (String) jsonObj.get("avatar_url");
-
-
-            return GithubNicknameResponseDto.of(nickName, img);
-
-        } catch (FileNotFoundException e) {
-            throw new BaseException(NOT_FOUND_GITHUB_NICKNAME);
-        } catch (Exception e) {
-            throw new BaseException(GITHUB_SERVER_ERROR);
-        }
+        FeignResponseInfo githubUser = githubClient.getGithubUser(githubNickname);
+        return GithubNicknameResponseDto.of(githubUser.getNickname(),githubUser.getImg());
     }
+
 
     /**
      * 그로밋 자체 닉네임 중복 조회 비즈니스 로직
@@ -142,6 +106,11 @@ public class UserAccountService {
      * @param nickname
      * @return 데이터베이스에 존재하는 닉네임이면 true, 존재하지 않은면 false
      */
+    public void validateNickname(String nickname){
+        if(checkNickname(nickname)){
+            throw new BadRequestException(DUPLICATED_NICKNAME);
+        }
+    }
     public boolean checkNickname(String nickname) {
         return userAccountRepository.existsByNickname(nickname);
     }
