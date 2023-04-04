@@ -19,8 +19,5 @@ public class NotFoundException extends BaseException{
         super(errorCode);
     }
 
-    public NotFoundException(ErrorCode errorCode, Map<String, String> data) {
-        super(errorCode, data);
-    }
 }
 

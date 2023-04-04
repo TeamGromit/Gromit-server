@@ -19,7 +19,4 @@ public class UnauthorizedException extends BaseException {
         super(errorCode);
     }
 
-    public UnauthorizedException(ErrorCode errorCode, Map<String, String> data) {
-        super(errorCode, data);
-    }
 }

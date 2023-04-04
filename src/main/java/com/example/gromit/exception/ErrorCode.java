@@ -8,7 +8,7 @@ import static org.springframework.http.HttpStatus.*;
 @Getter
 public enum ErrorCode {
 
-    SUCCESS(1000,"요청에 성공하였습니다.", OK),
+    SUCCESS(1000, "요청에 성공하였습니다.", OK),
 
     /**
      * 2000 : 공통 오류
@@ -18,7 +18,6 @@ public enum ErrorCode {
     _UNAUTHORIZED(2002, "권한이 없습니다.", UNAUTHORIZED),
 
     _METHOD_NOT_ALLOWED(2003, "지원하지 않는 Http Method 입니다.", METHOD_NOT_ALLOWED),
-    CONTROLLER_COMMON_ERROR_CODE(400, null, null),
 
     /**
      * 3000 : 유저 관련 오류
@@ -32,13 +31,13 @@ public enum ErrorCode {
     USER_NOT_FOUND(3005, "가입되지 않은 유저입니다.", NOT_FOUND),
     DUPLICATED_NICKNAME(3006, "중복된 닉네임 입니다.", BAD_REQUEST),
     DUPLICATED_EMAIL(3007, "중복된 이메일 입니다.", BAD_REQUEST),
-    NOT_FOUND_GITHUB_NICKNAME(3008,"해당 깃허브 닉네임을 찾을 수 없습니다.",BAD_REQUEST),
-    GITHUB_SERVER_ERROR(3009,"깃허브 서버와 통신에 실패하였습니다.",FORBIDDEN),
+    NOT_FOUND_GITHUB_NICKNAME(3008, "해당 깃허브 닉네임을 찾을 수 없습니다.", BAD_REQUEST),
+    GITHUB_SERVER_ERROR(3009, "깃허브 서버와 통신에 실패하였습니다.", FORBIDDEN),
 
     /**
      * 4000 : character 관련 오류
      */
-    NOT_FOUND_CHARACTER(4001,"캐릭터를 찾을 수 없습니다.",BAD_REQUEST),
+    NOT_FOUND_CHARACTER(4001, "캐릭터를 찾을 수 없습니다.", BAD_REQUEST),
 
     /**
      * 5000 : challenge 관련 오류
@@ -65,4 +64,4 @@ public enum ErrorCode {
         this.message = message;
         this.httpStatus = httpStatus;
     }
-}
+    }
