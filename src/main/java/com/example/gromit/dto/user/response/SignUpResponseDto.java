@@ -15,9 +15,15 @@ public class SignUpResponseDto {
 
     private final String refreshToken;
 
-    public SignUpResponseDto(Long userAccountId, String accessToken, String refreshToken) {
+    private SignUpResponseDto(Long userAccountId, String accessToken, String refreshToken) {
         this.userAccountId = userAccountId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
+
+    public static SignUpResponseDto of(Long userAccountId, String accessToken, String refreshToken){
+        return new SignUpResponseDto(userAccountId, accessToken, refreshToken);
+    }
+
+
 }

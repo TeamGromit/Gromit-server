@@ -24,9 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtService jwtService;
     private final JwtExceptionFilter jwtExceptionFilter;
 
-//    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -41,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login/apple").permitAll()
                 .antMatchers("/users/**").permitAll()
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
 //                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

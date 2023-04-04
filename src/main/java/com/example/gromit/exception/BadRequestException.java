@@ -18,7 +18,4 @@ public class BadRequestException extends BaseException {
         super(errorCode);
     }
 
-    public BadRequestException(ErrorCode errorCode, Map<String, String> data) {
-        super(errorCode, data);
-    }
 }
