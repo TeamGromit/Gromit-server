@@ -1,17 +1,37 @@
 package com.example.gromit.base;
 
+import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ValidationException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @Slf4j
 @RestControllerAdvice
 public class ExceptionAdvice {
+
+    private void getExceptionStackTrace(Exception e, @AuthenticationPrincipal UserAccount user,
+                                        HttpServletRequest request) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+
+        pw.append("\n==========================!!!TRACE START!!!==========================\n");
+        pw.append("uri: " + request.getRequestURI() + " " + request.getMethod() + "\n");
+        if (user != null) {
+            pw.append("uid: " + user.getId() + "\n");
+        }
+        pw.append(e.getMessage());
+        pw.append("\n==================================================================\n");
+        log.error(sw.toString());
+    }
 
     /**
      * Custom Exception 핸들링
