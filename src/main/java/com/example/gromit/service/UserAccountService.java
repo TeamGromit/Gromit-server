@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,6 +150,7 @@ public class UserAccountService {
     /**
      * 깃허브 커밋 내역 조회 및 갱신
      */
+    @Async("defaultTaskExecutor")
     @Transactional
     public void reloadCommits(UserAccount user, LocalDate time) {
 
