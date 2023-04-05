@@ -164,7 +164,7 @@ public class LoginService {
         user.setRefreshToken(newRefreshToken);
         userAccountRepository.save(user);
 
-        return new LoginResponseDto(newAccessToken, newRefreshToken);
+        return LoginResponseDto.of(newAccessToken, newRefreshToken);
     }
 
 
@@ -175,7 +175,7 @@ public class LoginService {
         userAccount.setRefreshToken(newRefreshToken);
         userAccountRepository.save(userAccount);
 
-        return new LoginResponseDto(newAccessToken, newRefreshToken);
+        return LoginResponseDto.of(newAccessToken, newRefreshToken);
 
     }
 }

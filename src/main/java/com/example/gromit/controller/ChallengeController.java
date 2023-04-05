@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.example.gromit.exception.ErrorCode.CONTROLLER_COMMON_ERROR_CODE;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class ChallengeController {
 
         if(bindingResult.hasErrors()){
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
-            return BaseResponse.onFailure(CONTROLLER_COMMON_ERROR_CODE.getCode(), objectError.getDefaultMessage(), null);
+            return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
         }
 
         Challenge challenge = challengeService.saveChallenge(userAccount, postChallengeRequest);

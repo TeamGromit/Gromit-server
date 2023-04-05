@@ -2,6 +2,7 @@ package com.example.gromit.jwt;
 
 import com.example.gromit.exception.UnauthorizedException;
 import com.example.gromit.service.JwtService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+@Slf4j
 //@Component
 //@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
@@ -31,10 +33,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         // 토큰이 존재한다면
         if (token != null) {
-
             // 토큰을 검증
             if (jwtService.validateToken(token)) {
-
                 //권한
                 Authentication authentication = jwtService.getAuthentication(token);
 
