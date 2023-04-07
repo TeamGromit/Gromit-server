@@ -1,3 +1,8 @@
+## 화면
+![gromit 어플 사진](https://user-images.githubusercontent.com/77667212/230550958-e73d7db1-3104-4f4f-b279-1fad3630a0e6.png)
+
+
+
 ## 기획서 
 https://docs.google.com/viewer?url=https://github.com/LHS-11/Gromit-server/files/10954918/Gromit.pm_.pdf?raw=True
 
