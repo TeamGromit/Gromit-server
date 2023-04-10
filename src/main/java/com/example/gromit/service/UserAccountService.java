@@ -201,7 +201,7 @@ public class UserAccountService {
             }
 
         } catch (NotFoundException e) {
-            System.out.println(e.getMessage());
+            throw new NotFoundException(NOT_FOUND_GITHUB_NICKNAME);
         } catch (IOException e) {
             throw new IllegalArgumentException("크롤링 서버 에러 ");
         }
