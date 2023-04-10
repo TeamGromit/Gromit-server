@@ -46,7 +46,6 @@ public class HomeController {
         if (userCharacter == null) {
             userCharacterService.grantFirstCharacter(userAccount);
         }
-
         // Home 에 필요한 정보들 가져옴
         ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount);
 

@@ -66,7 +66,7 @@ public class UserCharacterService {
      * 새로고침 비즈니스 로직
      * - 진화를 할 수 있으면 새로운 캐릭터를 부여, 진화를 할 수 없으면 기존의 캐릭터 사용
      */
-    @Async("defaultTaskExecutor")
+//    @Async("defaultTaskExecutor")
     @Transactional
     public ShowHomeResponse reloadCharacter(UserAccount user) {
 
