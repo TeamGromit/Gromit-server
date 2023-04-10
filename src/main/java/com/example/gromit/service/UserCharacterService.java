@@ -12,10 +12,12 @@ import com.example.gromit.repository.UserAccountRepository;
 import com.example.gromit.repository.UserCharacterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static com.example.gromit.exception.ErrorCode.NOT_FOUND_CHARACTER;
@@ -66,9 +68,9 @@ public class UserCharacterService {
      * 새로고침 비즈니스 로직
      * - 진화를 할 수 있으면 새로운 캐릭터를 부여, 진화를 할 수 없으면 기존의 캐릭터 사용
      */
-//    @Async("defaultTaskExecutor")
+    @Async("defaultTaskExecutor")
     @Transactional
-    public ShowHomeResponse reloadCharacter(UserAccount user) {
+    public Future< ShowHomeResponse> reloadCharacter(UserAccount user) {
 
         Long userId = user.getId();
         UserAccount userAccount = userAccountRepository.findById(userId).get();
@@ -105,17 +107,17 @@ public class UserCharacterService {
                     newCharacters.getImg(),
                     newCharacters.getGoal());
 
-            return showHomeResponse;
+            return new AsyncResult<>(showHomeResponse);
         }
 
 
         // 진화를 할 상황이 아닐 때 원래 캐릭터 반환
-        return ShowHomeResponse.of(totalCommit,
+        return new AsyncResult<>( ShowHomeResponse.of(totalCommit,
                 userAccount.getTodayCommit(),
                 level,
                 currentCharacter.getCharacters().getName(),
                 currentCharacter.getCharacters().getImg(),
-                goal);
+                goal));
     }
 
     public Characters getNewCharacters(int level) {
