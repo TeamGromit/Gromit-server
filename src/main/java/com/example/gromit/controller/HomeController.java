@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -36,7 +37,7 @@ public class HomeController {
      * @return
      */
     @GetMapping
-    public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount) {
+    public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount) throws ExecutionException, InterruptedException {
 
         // 커밋 갱신
         userAccountService.reloadCommits(userAccount, LocalDate.now());
@@ -46,9 +47,8 @@ public class HomeController {
         if (userCharacter == null) {
             userCharacterService.grantFirstCharacter(userAccount);
         }
-
         // Home 에 필요한 정보들 가져옴
-        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount);
+        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount).get();
 
         return BaseResponse.onSuccess(result);
     }
@@ -60,13 +60,13 @@ public class HomeController {
      * @return
      */
     @GetMapping("/reload")
-    public BaseResponse<ShowHomeResponse> reload(@AuthenticationPrincipal UserAccount userAccount) {
+    public BaseResponse<ShowHomeResponse> reload(@AuthenticationPrincipal UserAccount userAccount) throws ExecutionException, InterruptedException {
 
         // 커밋 갱신
         userAccountService.reloadCommits(userAccount, LocalDate.now());
 
         // 진화
-        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount);
+        ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount).get();
 
         return BaseResponse.onSuccess(result);
     }
