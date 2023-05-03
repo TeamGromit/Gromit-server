@@ -1,5 +1,6 @@
 package com.example.gromit.jwt;
 
+import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.exception.UnauthorizedException;
 import com.example.gromit.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                 // security 세션에 등록
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
-                throw new UnauthorizedException("유효하지 않은 토큰입니다.");
+                throw new UnauthorizedException(ErrorCode.NOT_VALID_TOKEN);
             }
 
         }else if(refreshToken!=null){
