@@ -27,6 +27,8 @@ public enum ErrorCode {
     APPLE_SERVER_ERROR(3002, "애플 서버와 통신에 실패하였습니다.", FORBIDDEN),
     FAIL_TO_MAKE_APPLE_PUBLIC_KEY(3003, "새로운 애플 공개키 생성에 실패하였습니다.", BAD_REQUEST),
     NOT_VALID_TOKEN(3010, "유효하지 않은 토큰입니다.", BAD_REQUEST),
+    EXPIRED_REFRESH_TOKEN(3011, "만료된 리프레쉬 토큰입니다.", BAD_REQUEST),
+    NOT_EXIST_TOKEN(3012,"토큰 값이 존재하지 않습니다.",BAD_REQUEST),
 
     USER_ALREADY_EXIST(3004, "이미 가입된 유저입니다.", BAD_REQUEST),
     USER_NOT_FOUND(3005, "가입되지 않은 유저입니다.", NOT_FOUND),
