@@ -1,5 +1,6 @@
 package com.example.gromit.jwt;
 
+import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.ErrorCode;
 import com.example.gromit.exception.UnauthorizedException;
 import com.example.gromit.service.JwtService;
@@ -14,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static com.example.gromit.exception.ErrorCode.NOT_EXIST_TOKEN;
 
 
 @Slf4j
@@ -56,6 +59,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             }else{
                 throw new UnauthorizedException("유효하지 않은 Refresh Token 입니다.");
             }
+        }else{
+            throw new BadRequestException(NOT_EXIST_TOKEN);
         }
 
 

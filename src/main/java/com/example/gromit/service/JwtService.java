@@ -19,8 +19,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Date;
 
-import static com.example.gromit.exception.ErrorCode.EXPIRED_TOKEN;
-import static com.example.gromit.exception.ErrorCode.USER_NOT_FOUND;
+import static com.example.gromit.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +39,7 @@ public class JwtService {
                 .setIssuer("gromit")
                 .setIssuedAt(now)
                 .setSubject(tokenDto.getUserAccountId().toString())
+//                .setExpiration(new Date(now.getTime()+20000))
                 .setExpiration(new Date(now.getTime() + Duration.ofDays(180).toMillis()))
                 .claim("userAccountId", tokenDto.getUserAccountId())
                 .claim("roles", "USER")
@@ -85,12 +85,15 @@ public class JwtService {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(Base64.getEncoder().encodeToString(("" + JWT_SECRET).getBytes(
                             StandardCharsets.UTF_8))).parseClaimsJws(token);
+
+            System.out.println(claims.getBody().getExpiration());
+
             if (claims.getBody().getExpiration().before(new Date())) {
                 throw new UnauthorizedException(EXPIRED_TOKEN);
             }
             return true;
         } catch (Exception e) {
-            return false;
+            throw new UnauthorizedException(EXPIRED_TOKEN);
         }
     }
 
@@ -114,7 +117,7 @@ public class JwtService {
             }
             return false;
         } catch (Exception e) {
-            return false;
+            throw new UnauthorizedException(EXPIRED_REFRESH_TOKEN);
         }
     }
 
