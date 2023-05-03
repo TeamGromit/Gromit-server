@@ -2,6 +2,7 @@ package com.example.gromit.jwt;
 
 import com.example.gromit.base.BaseResponse;
 import com.example.gromit.exception.BadRequestException;
+import com.example.gromit.exception.NotFoundException;
 import com.example.gromit.exception.UnauthorizedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +30,14 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             // 토큰 값이 존재하지 않을 때
             filterChain.doFilter(request, response);
 
-        } catch (UnauthorizedException | BadRequestException e) {
+        } catch (UnauthorizedException | NotFoundException | BadRequestException e) {
 
             ObjectMapper objectMapper = new ObjectMapper();
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
             objectMapper.writeValue(response.getWriter(),
-                    BaseResponse.onFailure(e.getErrorCode().getCode(), e.getMessage(), null));
+                    BaseResponse.onFailure(e.getErrorCode().getCode(), e.getResponseMessage(), null));
         }
     }
 }

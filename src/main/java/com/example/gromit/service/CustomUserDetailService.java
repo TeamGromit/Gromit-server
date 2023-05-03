@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static com.example.gromit.exception.ErrorCode.*;
+
 @RequiredArgsConstructor
 @Service
 public class CustomUserDetailService implements UserDetailsService {
@@ -16,9 +18,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String userAccountId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String userAccountId) throws UsernameNotFoundException{
         System.out.println("userAccountId = " + userAccountId);
         return (UserDetails) userAccountRepository.findById(Long.parseLong(userAccountId))
-                .orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
     }
 }
