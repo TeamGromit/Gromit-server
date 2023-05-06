@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web)  {
-        web.ignoring().antMatchers("/login/apple", "/users", "/users/github/**","/users/check" );
+        web.ignoring().antMatchers("/login/apple", "/users", "/users/github/**","/users/check/**" );
     }
 
     @Override
