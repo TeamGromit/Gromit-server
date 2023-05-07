@@ -49,12 +49,12 @@ public class UserAccountService {
     @Transactional
     public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
 
-        // 이메일 중복검사 로직
-//        userAccountRepository
-//                .findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), false)
-//                .ifPresent(email -> {
-//                    throw new BaseException(DUPLICATED_EMAIL);
-//                });
+//         이메일 중복검사 로직
+        userAccountRepository
+                .findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), false)
+                .ifPresent(email -> {
+                    throw new BaseException(DUPLICATED_EMAIL);
+                });
 
         // 닉네임 중복검사 로직
         userAccountRepository
