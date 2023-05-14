@@ -80,7 +80,7 @@ public class UserAccountController {
         return BaseResponse.onSuccess(result);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public BaseResponse<String> deleteUserAccount(@AuthenticationPrincipal UserAccount userAccount) {
         userAccountService.delete(userAccount);
         return BaseResponse.onSuccess("회원 탈퇴 성공했습니다.");
