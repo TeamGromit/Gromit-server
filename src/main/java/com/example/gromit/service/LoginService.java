@@ -31,6 +31,9 @@ import static com.example.gromit.exception.ErrorCode.*;
 @Service
 public class LoginService {
 
+    private static final String APPLE_REQUEST_URL = "https://appleid.apple.com/auth/keys";
+    private static final String GROMIT_ISSUE = "teamgromit.gromit";
+
     private final UserAccountRepository userAccountRepository;
     private final JwtService jwtService;
     private final AppleClient appleClient;
@@ -57,7 +60,6 @@ public class LoginService {
     // login 서비스
     public LoginResponseDto appleLogin(LoginRequestDto loginRequestDto) {
         String token = loginRequestDto.getToken();
-        String appleReqUrl = "https://appleid.apple.com/auth/keys";
         String email;
         JsonParser parser = new JsonParser();
 
@@ -105,11 +107,11 @@ public class LoginService {
             String aud = userInfoObject.get("aud").getAsString();
 
 
-            if (!Objects.equals(userInfoObject.get("iss").getAsString(), "https://appleid.apple.com")) {
+            if (!Objects.equals(userInfoObject.get("iss").getAsString(), APPLE_REQUEST_URL)) {
                 throw new BadRequestException(APPLE_SERVER_ERROR);
             }
 
-            if (!Objects.equals(userInfoObject.get("aud").getAsString(), "teamgromit.gromit")) {
+            if (!Objects.equals(userInfoObject.get("aud").getAsString(), GROMIT_ISSUE)) {
                 throw new BadRequestException(APPLE_SERVER_ERROR);
             }
 

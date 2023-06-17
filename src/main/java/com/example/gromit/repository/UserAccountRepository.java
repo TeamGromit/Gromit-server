@@ -10,7 +10,7 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
 
-    Boolean existsByNickname(String nickname);
+    Boolean existsByNicknameAndIsDeleted(String nickname,boolean isDeleted);
 
     Optional<UserAccount> findByEmailAndProviderAndIsDeleted(String email, String provider, boolean isDeleted);
 
@@ -19,4 +19,5 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     List<UserAccount> findByIsDeleted(boolean isDeleted);
 
     Optional<UserAccount> findByIdAndIsDeleted(Long id, boolean isDeleted);
+
 }
