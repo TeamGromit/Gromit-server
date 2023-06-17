@@ -67,4 +67,4 @@ public enum ErrorCode {
         this.message = message;
         this.httpStatus = httpStatus;
     }
-    }
+}
