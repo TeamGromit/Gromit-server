@@ -113,7 +113,7 @@ public class UserAccountService {
         }
     }
     public boolean checkNickname(String nickname) {
-        return userAccountRepository.existsByNickname(nickname);
+        return userAccountRepository.existsByNicknameAndIsDeleted(nickname,false);
     }
 
     @Transactional
@@ -122,11 +122,13 @@ public class UserAccountService {
                 .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
 
         // UserCharacter 삭제
-        userCharacterRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-                .stream().forEach(userCharacter -> {
-                    userCharacter.setDeleted(true);
-                    userCharacterRepository.save(userCharacter);
-                });
+        userCharacterRepository.deleteByUserAccountId(userAccount.getId());
+
+//        userCharacterRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
+//                .stream().forEach(userCharacter -> {
+//                    userCharacter.setDeleted(true);
+//                    userCharacterRepository.save(userCharacter);
+//                });
 
         // Member 삭제
         memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
@@ -136,11 +138,11 @@ public class UserAccountService {
                 });
 
         // Challenge 삭제
-        challengeRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-                .stream().forEach(challenge -> {
-                    challenge.setDeleted(true);
-                    challengeRepository.save(challenge);
-                });
+//        challengeRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
+//                .stream().forEach(challenge -> {
+//                    challenge.setDeleted(true);
+//                    challengeRepository.save(challenge);
+//                });
 
 
         userAccount.setDeleted(true);

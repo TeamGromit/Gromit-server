@@ -31,4 +31,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         int getChallengeGoal();
         int getCommits();
     }
+
+    void deleteByUserAccountId(Long userAccountId);
 }
