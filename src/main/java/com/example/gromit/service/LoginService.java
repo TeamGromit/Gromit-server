@@ -31,7 +31,9 @@ import static com.example.gromit.exception.ErrorCode.*;
 @Service
 public class LoginService {
 
-    private static final String APPLE_REQUEST_URL = "https://appleid.apple.com/auth/keys";
+//    private static final String APPLE_REQUEST_URL = "https://appleid.apple.com/auth/keys";
+    private static final String APPLE_REQUEST_URL = "https://appleid.apple.com";
+
     private static final String GROMIT_ISSUE = "teamgromit.gromit";
 
     private final UserAccountRepository userAccountRepository;
@@ -107,11 +109,11 @@ public class LoginService {
             String aud = userInfoObject.get("aud").getAsString();
 
 
-            if (!Objects.equals(userInfoObject.get("iss").getAsString(), APPLE_REQUEST_URL)) {
+            if (!Objects.equals(iss, APPLE_REQUEST_URL)) {
                 throw new BadRequestException(APPLE_SERVER_ERROR);
             }
 
-            if (!Objects.equals(userInfoObject.get("aud").getAsString(), GROMIT_ISSUE)) {
+            if (!Objects.equals(aud, GROMIT_ISSUE)) {
                 throw new BadRequestException(APPLE_SERVER_ERROR);
             }
 
