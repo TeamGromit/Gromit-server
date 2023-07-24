@@ -186,13 +186,11 @@ public class UserAccountService {
 
             String contributionText = articles.stream()
                     .filter(article -> article.attr("data-date").equals(now))
-                    .map(article -> article.ownText())
+                    .map(article -> article.select("span").text())
                     .findFirst()
                     .orElseThrow(() -> new NotFoundException("현재 날짜가 갱신되지 않았습니다."));
 
-            String commitText = Arrays.stream(contributionText.split(" "))
-                    .findFirst()
-                    .get();
+            String commitText = contributionText.split(" ")[0];
 
             if (isTodayCommitZero(commitText)) {
                 todayCommit = 0;
