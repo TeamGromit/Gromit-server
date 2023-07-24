@@ -69,9 +69,9 @@ public class UserAccountController {
     /**
      * 닉네임 조회 API
      */
-    @GetMapping(value={"/check/{nickname}","/check"})
+    @GetMapping("/check")
     public BaseResponse<NicknameResponseDto> checkNickname(
-            @PathVariable(value = "nickname",required = false)
+            @RequestParam
             @NotBlank(message = "닉네임을 입력해주세요.")
             @Pattern(regexp = "^[0-9a-zA-Z가-힣]{1,8}", message = "닉네임은 8자이하 한글,숫자,영어로만 이루어져야 합니다.") String nickname) {
         log.info(nickname);
