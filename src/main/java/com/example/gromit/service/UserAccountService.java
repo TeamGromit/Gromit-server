@@ -152,7 +152,7 @@ public class UserAccountService {
     /**
      * 깃허브 커밋 내역 조회 및 갱신
      */
-    @Async("defaultTaskExecutor")
+//    @Async("defaultTaskExecutor")
     @Transactional
     public void reloadCommits(UserAccount user, LocalDate time) {
 
