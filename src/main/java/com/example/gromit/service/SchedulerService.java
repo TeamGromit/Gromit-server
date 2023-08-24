@@ -24,7 +24,7 @@ public class SchedulerService {
         List<UserAccount> userAccounts = userAccountRepository.findByIsDeleted(false);
 
         userAccounts.stream().forEach(userAccount -> {
-            userAccountService.reloadCommits(userAccount, LocalDate.now().minusDays(1));
+            userAccountService.reloadCommits(userAccount);
             userAccountService.resetTodayCommits(userAccount);
 
         });
