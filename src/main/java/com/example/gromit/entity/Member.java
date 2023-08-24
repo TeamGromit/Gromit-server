@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +36,8 @@ public class Member extends BaseEntity {
 
     @Column(nullable = false)
     private boolean isDeleted;
+
+    private LocalDate commitDate;
 
     private Member(Challenge challenge, UserAccount userAccount, int commits, boolean isDeleted) {
         this.challenge = challenge;
