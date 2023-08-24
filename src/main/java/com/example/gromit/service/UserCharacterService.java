@@ -70,10 +70,9 @@ public class UserCharacterService {
      */
 //    @Async("defaultTaskExecutor")
     @Transactional
-    public Future< ShowHomeResponse> reloadCharacter(UserAccount user) {
+    public Future< ShowHomeResponse> reloadCharacter(UserAccount userAccount) {
 
-        Long userId = user.getId();
-        UserAccount userAccount = userAccountRepository.findById(userId).get();
+        Long userId = userAccount.getId();
 
         UserCharacter currentCharacter = userCharacterRepository
                 .findByUserAccountIdAndStatusAndIsDeleted(userId, 0, false)

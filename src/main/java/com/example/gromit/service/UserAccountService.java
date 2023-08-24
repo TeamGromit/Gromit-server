@@ -18,16 +18,12 @@ import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-import java.util.stream.Collectors;
+import java.util.List;
 
 import static com.example.gromit.exception.ErrorCode.*;
 
@@ -50,28 +46,17 @@ public class UserAccountService {
     public SignUpResponseDto signUp(SignUpRequestDto signUpRequestDto) {
 
 //         이메일 중복검사 로직
-        userAccountRepository
-                .findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), false)
-                .ifPresent(email -> {
-                    throw new BaseException(DUPLICATED_EMAIL);
-                });
+        userAccountRepository.findByEmailAndProviderAndIsDeleted(signUpRequestDto.getEmail(), signUpRequestDto.getProvider(), false).ifPresent(email -> {
+            throw new BaseException(DUPLICATED_EMAIL);
+        });
 
         // 닉네임 중복검사 로직
-        userAccountRepository
-                .findByNicknameAndIsDeleted(signUpRequestDto.getNickname(), false)
-                .ifPresent(nickname -> {
-                    throw new BaseException(DUPLICATED_NICKNAME);
-                });
+        userAccountRepository.findByNicknameAndIsDeleted(signUpRequestDto.getNickname(), false).ifPresent(nickname -> {
+            throw new BaseException(DUPLICATED_NICKNAME);
+        });
 
         // 사용자 생성
-        UserAccount user = UserAccount.of(signUpRequestDto.getNickname(),
-                signUpRequestDto.getGithubName(),
-                0,
-                0,
-                signUpRequestDto.getProvider(),
-                signUpRequestDto.getEmail(),
-                false,
-                false);
+        UserAccount user = UserAccount.of(signUpRequestDto.getNickname(), signUpRequestDto.getGithubName(), 0, 0, signUpRequestDto.getProvider(), signUpRequestDto.getEmail(), false, false);
 
         userAccountRepository.save(user);
 
@@ -97,7 +82,7 @@ public class UserAccountService {
      */
     public GithubNicknameResponseDto getGithubUser(String githubNickname) {
         FeignResponseInfo githubUser = githubClient.getGithubUser(githubNickname);
-        return GithubNicknameResponseDto.of(githubUser.getNickname(),githubUser.getImg());
+        return GithubNicknameResponseDto.of(githubUser.getNickname(), githubUser.getImg());
     }
 
 
@@ -107,27 +92,26 @@ public class UserAccountService {
      * @param nickname
      * @return 데이터베이스에 존재하는 닉네임이면 true, 존재하지 않은면 false
      */
-    public void validateNickname(String nickname){
-        if(checkNickname(nickname)){
+    public void validateNickname(String nickname) {
+        if (checkNickname(nickname)) {
             throw new BadRequestException(DUPLICATED_NICKNAME);
         }
     }
+
     public boolean checkNickname(String nickname) {
-        return userAccountRepository.existsByNicknameAndIsDeleted(nickname,false);
+        return userAccountRepository.existsByNicknameAndIsDeleted(nickname, false);
     }
 
     @Transactional
     public void delete(UserAccount userAccount) {
         // UserCharacter 삭제
-        userCharacterRepository.deleteByUserAccountId(userAccount.getId());
+        userCharacterRepository.deleteAllByUserAccountId(userAccount.getId());
 
         // Member 삭제
-        memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-                .stream().forEach(member -> {
-                    member.setDeleted(true);
-                    memberRepository.save(member);
-                });
+        memberRepository.deleteAllByUserAccountId(userAccount.getId());
 
+        // 회원탈퇴 하려는 유저가 챌린지 방장일 경우, challenge 기간이 만료 되었거나, 되기 전이면 삭제
+        challengeRepository.findAllByUserAccountIdAndStartDateGreaterThanAndEndDateLessThan(userAccount.getId(), LocalDate.now(), LocalDate.now());
 
         userAccount.setDeleted(true);
         userAccountRepository.save(userAccount);
@@ -138,44 +122,34 @@ public class UserAccountService {
      */
 //    @Async("defaultTaskExecutor")
     @Transactional
-    public void reloadCommits(UserAccount userAccount, LocalDate time) {
+    public void reloadCommits(UserAccount userAccount) {
 
-        String now = time.toString();
+        LocalDate now = LocalDate.now();
         String gitHubName = userAccount.getGithubName();
-        int oldTodayCommit = userAccount.getTodayCommit();
-        int totalCommit = userAccount.getCommits();
-        int todayCommit = 0;
-        todayCommit = getTodayCommitByGithub(now, gitHubName, todayCommit);
+        int oldTodayCommit = userAccount.getTodayCommit(); // 현재 DB에 저장되어 있는 유저의 오늘의 커밋
+        int totalCommit = userAccount.getCommits(); // 현재 유저의 총 커밋 수
+        int todayCommit = getTodayCommitByGithub(now.toString(), gitHubName); // 유저의 오늘의 커밋
 
         //챌린지 정보와 해당 유저의 멤버 커밋 수 저장
-        ConcurrentMap<Long, Integer> memberInfo = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-                .stream()
-                .filter(m -> challengeRepository.existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(m.getChallenge().getId(), time, time))
-                .filter(m -> m.getCommits() < m.getChallenge().getGoal())
-                .collect(Collectors.toConcurrentMap(m -> m.getId(), m -> m.getCommits()));
+        List<Member> members = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false);
+        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit,now, members);
 
-
-        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit, memberInfo);
+        userAccountRepository.save(userAccount);
     }
 
-    private static int getTodayCommitByGithub(String now, String gitHubName, int todayCommit) {
+    private static int getTodayCommitByGithub(String now, String gitHubName) {
+
+        int todayCommit = 0;
         String url = "https://github.com/users/" + gitHubName + "/contributions";
 
         try {
             Document rawData = Jsoup.connect(url).get();
             Elements articles = rawData.getElementsByClass("ContributionCalendar-day");
 
-            String contributionText = articles.stream()
-                    .filter(article -> article.attr("data-date").equals(now))
-                    .map(article -> article.select("span").text())
-                    .findFirst()
-                    .orElseThrow(() -> new NotFoundException("현재 날짜가 갱신되지 않았습니다."));
+            String contributionText = articles.stream().filter(article -> article.attr("data-date").equals(now)).map(article -> article.select("span").text()).findFirst().orElseThrow(() -> new NotFoundException("현재 날짜가 갱신되지 않았습니다."));
 
             String commitText = contributionText.split(" ")[0];
 
-            if (isTodayCommitZero(commitText)) {
-                todayCommit = 0;
-            }
             if (!isTodayCommitZero(commitText)) {
                 todayCommit = Integer.parseInt(commitText);
 
@@ -189,25 +163,29 @@ public class UserAccountService {
         return todayCommit;
     }
 
-    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit, Map<Long, Integer> memberInfo) {
+    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit,LocalDate now, List<Member> members) {
 
-        if (oldTodayCommit != todayCommit) {
 
-//             새로고침 누른 유저에 해당하는 참여 챌린지 커밋 갱신
-            memberInfo.forEach((memberId, memberCommits) -> {
-                int newCommits = memberCommits + todayCommit - oldTodayCommit;
-
-                Member member = memberRepository.findById(memberId).get();
-
-                member.setCommits(newCommits);
-                memberRepository.save(member);
-            });
-
-            // 새로고침 누른 유저 커밋 갱신
-            int newCommits = totalCommit + todayCommit - oldTodayCommit;
-            userAccount.reloadCommits(todayCommit, newCommits);
-            userAccountRepository.save(userAccount);
+//        새로고침 누른 유저에 해당하는 참여 챌린지 커밋 갱신
+        for (Member member : members) {
+            LocalDate memberCommitDate = member.getCommitDate();
+            if (memberCommitDate == null || !memberCommitDate.equals(now) || (memberCommitDate.equals(now) && oldTodayCommit != todayCommit)) {
+                member.setCommits(member.getCommits() + todayCommit);
+                member.setCommitDate(now);
+            }
         }
+
+
+//         새로고침 누른 유저 커밋 갱신
+//         유저의 마지막 커밋 날짜와 현재 날짜가 다를 때, 무조건 갱신
+//         유저의 마지막 커밋 날짜와 현재 날짜가 같을 때, 커밋수가 달라지면 update
+        LocalDate userCommitDate = userAccount.getCommitDate();
+        if (userCommitDate == null || !userCommitDate.equals(now) || (userCommitDate.equals(now) && oldTodayCommit != todayCommit)) {
+            userAccount.setCommits(totalCommit + todayCommit - oldTodayCommit);
+            userAccount.setCommitDate(now);
+            userAccount.setTodayCommit(todayCommit);
+        }
+
     }
 
     private static boolean isTodayCommitZero(String commitText) {
@@ -233,9 +211,12 @@ public class UserAccountService {
         return newCommits;
     }
 
-    public NicknameResponseDto changeNickname(UserAccount userAccount, ChangeNicknameRequestDto changeNicknameRequestDto) {
-        userAccount.setNickname(changeNicknameRequestDto.getNickname());
-        userAccountRepository.save(userAccount);
+    public NicknameResponseDto changeNickname(UserAccount userAccount, ChangeNicknameRequestDto
+            changeNicknameRequestDto) {
+        if (userAccountRepository.existsByNicknameAndIsDeleted(userAccount.getNickname(), false)) {
+            userAccount.setNickname(changeNicknameRequestDto.getNickname());
+            userAccountRepository.save(userAccount);
+        }
         return NicknameResponseDto.of(changeNicknameRequestDto.getNickname());
     }
 }

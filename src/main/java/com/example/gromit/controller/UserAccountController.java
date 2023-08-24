@@ -92,7 +92,7 @@ public class UserAccountController {
     @PatchMapping("/reload") //커밋 새로고침
     public BaseResponse<String> reloadCommits(@AuthenticationPrincipal UserAccount userAccount) {
         System.out.println("커밋 새로고침 컨트롤러");
-        userAccountService.reloadCommits(userAccount, LocalDate.now());
+        userAccountService.reloadCommits(userAccount);
         return BaseResponse.onSuccess("커밋 새로고침에 성공했습니다.");
     }
 
