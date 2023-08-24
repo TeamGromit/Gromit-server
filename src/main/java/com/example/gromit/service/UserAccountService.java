@@ -118,17 +118,8 @@ public class UserAccountService {
 
     @Transactional
     public void delete(UserAccount userAccount) {
-        userAccountRepository.findById(userAccount.getId())
-                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
-
         // UserCharacter 삭제
         userCharacterRepository.deleteByUserAccountId(userAccount.getId());
-
-//        userCharacterRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-//                .stream().forEach(userCharacter -> {
-//                    userCharacter.setDeleted(true);
-//                    userCharacterRepository.save(userCharacter);
-//                });
 
         // Member 삭제
         memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
@@ -136,13 +127,6 @@ public class UserAccountService {
                     member.setDeleted(true);
                     memberRepository.save(member);
                 });
-
-        // Challenge 삭제
-//        challengeRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
-//                .stream().forEach(challenge -> {
-//                    challenge.setDeleted(true);
-//                    challengeRepository.save(challenge);
-//                });
 
 
         userAccount.setDeleted(true);
@@ -154,9 +138,7 @@ public class UserAccountService {
      */
 //    @Async("defaultTaskExecutor")
     @Transactional
-    public void reloadCommits(UserAccount user, LocalDate time) {
-
-        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
+    public void reloadCommits(UserAccount userAccount, LocalDate time) {
 
         String now = time.toString();
         String gitHubName = userAccount.getGithubName();
@@ -166,7 +148,6 @@ public class UserAccountService {
         todayCommit = getTodayCommitByGithub(now, gitHubName, todayCommit);
 
         //챌린지 정보와 해당 유저의 멤버 커밋 수 저장
-
         ConcurrentMap<Long, Integer> memberInfo = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false)
                 .stream()
                 .filter(m -> challengeRepository.existsByIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(m.getChallenge().getId(), time, time))
@@ -236,8 +217,7 @@ public class UserAccountService {
     /**
      * 오늘의 커밋 0 으로 초기화
      */
-    public void resetTodayCommits(UserAccount user) {
-        UserAccount userAccount = userAccountRepository.findById(user.getId()).get();
+    public void resetTodayCommits(UserAccount userAccount) {
         userAccount.setTodayCommit(0);
         userAccountRepository.save(userAccount);
     }
@@ -254,9 +234,8 @@ public class UserAccountService {
     }
 
     public NicknameResponseDto changeNickname(UserAccount userAccount, ChangeNicknameRequestDto changeNicknameRequestDto) {
-        UserAccount user = userAccountRepository.findById(userAccount.getId()).get();
-        user.setNickname(changeNicknameRequestDto.getNickname());
-        userAccountRepository.save(user);
+        userAccount.setNickname(changeNicknameRequestDto.getNickname());
+        userAccountRepository.save(userAccount);
         return NicknameResponseDto.of(changeNicknameRequestDto.getNickname());
     }
 }
