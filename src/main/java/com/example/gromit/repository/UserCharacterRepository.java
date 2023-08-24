@@ -20,6 +20,6 @@ public interface UserCharacterRepository extends JpaRepository<UserCharacter, Lo
 
     Optional<UserCharacter> findByUserAccountIdAndStatusAndIsDeleted(Long userAccountId,int status,boolean isDeleted);
 
-    void deleteByUserAccountId(Long userAccountId);
+    void deleteAllByUserAccountId(Long userAccountId);
 
 }

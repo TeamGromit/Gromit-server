@@ -32,5 +32,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
         int getCommits();
     }
 
-    void deleteByUserAccountId(Long userAccountId);
+    void deleteAllByUserAccountId(Long userAccountId);
 }
