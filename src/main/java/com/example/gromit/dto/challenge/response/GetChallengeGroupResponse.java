@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 public class GetChallengeGroupResponse {
 
+    private final Long challengeId;
     private final String title;
     private final LocalDate startDate;
     private final int goal;
@@ -19,7 +20,8 @@ public class GetChallengeGroupResponse {
     private final int recruits;
     private final int currentMemberNum;
 
-    private GetChallengeGroupResponse(String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
+    private GetChallengeGroupResponse(Long challengeId, String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
+        this.challengeId = challengeId;
         this.title = title;
         this.startDate = startDate;
         this.goal = goal;
@@ -27,12 +29,13 @@ public class GetChallengeGroupResponse {
         this.currentMemberNum = currentMemberNum;
     }
 
-    public static GetChallengeGroupResponse of(String title, LocalDate startDate, int goal, int recruits, int currentMemberNum){
-        return new GetChallengeGroupResponse(title, startDate, goal, recruits, currentMemberNum);
+    public static GetChallengeGroupResponse of(Long challengeId,String title, LocalDate startDate, int goal, int recruits, int currentMemberNum){
+        return new GetChallengeGroupResponse(challengeId,title, startDate, goal, recruits, currentMemberNum);
     }
 
     public static GetChallengeGroupResponse from(Challenge challenge){
         return new GetChallengeGroupResponse(
+                challenge.getId(),
                 challenge.getTitle(),
                 challenge.getStartDate(),
                 challenge.getGoal(),

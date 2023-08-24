@@ -40,7 +40,7 @@ public class HomeController {
     public BaseResponse<ShowHomeResponse> home(@AuthenticationPrincipal UserAccount userAccount) throws ExecutionException, InterruptedException {
 
         // 커밋 갱신
-        userAccountService.reloadCommits(userAccount, LocalDate.now());
+        userAccountService.reloadCommits(userAccount);
 
         //유저에게 할당된 캐릭터가 없다면 1레벨 캐릭터 부여
         UserCharacter userCharacter = userCharacterService.findByUserAccountId(userAccount);
@@ -63,7 +63,7 @@ public class HomeController {
     public BaseResponse<ShowHomeResponse> reload(@AuthenticationPrincipal UserAccount userAccount) throws ExecutionException, InterruptedException {
 
         // 커밋 갱신
-        userAccountService.reloadCommits(userAccount, LocalDate.now());
+        userAccountService.reloadCommits(userAccount);
 
         // 진화
         ShowHomeResponse result = userCharacterService.reloadCharacter(userAccount).get();

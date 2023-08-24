@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -60,6 +61,8 @@ public class UserAccount extends BaseEntity implements UserDetails {
     private boolean isAlarm;
     private Timestamp alarm;
 
+    private LocalDate commitDate;
+
     /**
      * 애플 로그인 구현 컬럼들
      */
@@ -102,7 +105,9 @@ public class UserAccount extends BaseEntity implements UserDetails {
         this.commits = commits;
     }
 
-
+    public void setCommitDate(LocalDate commitDate) {
+        this.commitDate = commitDate;
+    }
 
     @Override
     public boolean equals(Object o) {
