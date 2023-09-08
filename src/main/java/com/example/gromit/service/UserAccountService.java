@@ -175,13 +175,17 @@ public class UserAccountService {
             }
         }
 
-
-//         새로고침 누른 유저 커밋 갱신
-//         유저의 마지막 커밋 날짜와 현재 날짜가 다를 때, 무조건 갱신
-//         유저의 마지막 커밋 날짜와 현재 날짜가 같을 때, 커밋수가 달라지면 update
+        // 같은 날에 새로고침 시 커밋 수가 다를 떄
         LocalDate userCommitDate = userAccount.getCommitDate();
-        if (userCommitDate == null || !userCommitDate.equals(now) || (userCommitDate.equals(now) && oldTodayCommit != todayCommit)) {
-            userAccount.setCommits(totalCommit + todayCommit - oldTodayCommit);
+        if (userCommitDate.equals(now) && oldTodayCommit != todayCommit) {
+            userAccount.setCommits(totalCommit + todayCommit-oldTodayCommit);
+            userAccount.setCommitDate(now);
+            userAccount.setTodayCommit(todayCommit);
+        }
+
+        // 처음 커밋을 하거나 다른 날에 새로고침 시
+        if(userCommitDate == null || !userCommitDate.equals(now)){
+            userAccount.setCommits(totalCommit + todayCommit);
             userAccount.setCommitDate(now);
             userAccount.setTodayCommit(todayCommit);
         }
