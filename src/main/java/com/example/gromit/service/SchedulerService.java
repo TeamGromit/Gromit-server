@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -19,14 +19,13 @@ public class SchedulerService {
     private final UserAccountService userAccountService;
 
 
-    @Scheduled(cron = "0 0 0 1/1 * ? *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void renewAllUserCommit(){
         List<UserAccount> userAccounts = userAccountRepository.findByIsDeleted(false);
 
         userAccounts.stream().forEach(userAccount -> {
             userAccountService.reloadCommits(userAccount);
             userAccountService.resetTodayCommits(userAccount);
-
         });
     }
 }
