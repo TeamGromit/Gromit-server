@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.example.gromit.exception.ErrorCode.*;
 
@@ -132,8 +133,7 @@ public class UserAccountService {
 
         //챌린지 정보와 해당 유저의 멤버 커밋 수 저장
         List<Member> members = memberRepository.findAllByUserAccountIdAndIsDeleted(userAccount.getId(), false);
-        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit,now, members);
-
+        renewCommits(userAccount, oldTodayCommit, totalCommit, todayCommit, now, members);
         userAccountRepository.save(userAccount);
     }
 
@@ -163,29 +163,30 @@ public class UserAccountService {
         return todayCommit;
     }
 
-    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit,LocalDate now, List<Member> members) {
+    private void renewCommits(UserAccount userAccount, int oldTodayCommit, int totalCommit, int todayCommit, LocalDate now, List<Member> members) {
 
 
 //        새로고침 누른 유저에 해당하는 참여 챌린지 커밋 갱신
-        for (Member member : members) {
-            LocalDate memberCommitDate = member.getCommitDate();
-            if (memberCommitDate == null || !memberCommitDate.equals(now) || (memberCommitDate.equals(now) && oldTodayCommit != todayCommit)) {
-                member.setCommits(member.getCommits() + todayCommit);
-                member.setCommitDate(now);
-            }
-        }
-
-        // 같은 날에 새로고침 시 커밋 수가 다를 떄
+//        if (members != null || members.size()!=0) {
+//            for (Member member : members) {
+//                LocalDate memberCommitDate = member.getCommitDate();
+//                if (memberCommitDate == null || !memberCommitDate.equals(now) || (memberCommitDate.equals(now) && oldTodayCommit != todayCommit)) {
+//                    member.setCommits(member.getCommits() + todayCommit);
+//                    member.setCommitDate(now);
+//                }
+//            }
+//        }
         LocalDate userCommitDate = userAccount.getCommitDate();
-        if (userCommitDate.equals(now) && oldTodayCommit != todayCommit) {
-            userAccount.setCommits(totalCommit + todayCommit-oldTodayCommit);
+        // 처음 커밋을 하거나 다른 날에 새로고침 시
+        if (userCommitDate == null || !userCommitDate.equals(now)) {
+            userAccount.setCommits(totalCommit + todayCommit);
             userAccount.setCommitDate(now);
             userAccount.setTodayCommit(todayCommit);
         }
 
-        // 처음 커밋을 하거나 다른 날에 새로고침 시
-        if(userCommitDate == null || !userCommitDate.equals(now)){
-            userAccount.setCommits(totalCommit + todayCommit);
+        // 같은 날에 새로고침 시 커밋 수가 다를 떄
+        if (userCommitDate != null && userCommitDate.equals(now) && oldTodayCommit != todayCommit) {
+            userAccount.setCommits(totalCommit + todayCommit - oldTodayCommit);
             userAccount.setCommitDate(now);
             userAccount.setTodayCommit(todayCommit);
         }
