@@ -87,6 +87,7 @@ public class UserCharacterService {
 
             //커밋 수 초기화 (유저의 누적 커밋 - goal)
             int commits = userAccountService.renewCommits(userAccount, goal);
+            userAccount.setCommits(commits);
 
             //updateStatus (기존 캐릭터 status 0 -> 1)
             currentCharacter.setStatus(1);
