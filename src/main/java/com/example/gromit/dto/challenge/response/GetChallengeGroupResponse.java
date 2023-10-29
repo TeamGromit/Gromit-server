@@ -20,7 +20,7 @@ public class GetChallengeGroupResponse {
     private final int recruits;
     private final int currentMemberNum;
 
-    private GetChallengeGroupResponse(Long challengeId, String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
+    public GetChallengeGroupResponse(Long challengeId, String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
         this.challengeId = challengeId;
         this.title = title;
         this.startDate = startDate;
@@ -29,11 +29,11 @@ public class GetChallengeGroupResponse {
         this.currentMemberNum = currentMemberNum;
     }
 
-    public static GetChallengeGroupResponse of(Long challengeId,String title, LocalDate startDate, int goal, int recruits, int currentMemberNum){
-        return new GetChallengeGroupResponse(challengeId,title, startDate, goal, recruits, currentMemberNum);
+    public static GetChallengeGroupResponse of(Long challengeId, String title, LocalDate startDate, int goal, int recruits, int currentMemberNum) {
+        return new GetChallengeGroupResponse(challengeId, title, startDate, goal, recruits, currentMemberNum);
     }
 
-    public static GetChallengeGroupResponse from(Challenge challenge){
+    public static GetChallengeGroupResponse from(Challenge challenge) {
         return new GetChallengeGroupResponse(
                 challenge.getId(),
                 challenge.getTitle(),

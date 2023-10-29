@@ -1,5 +1,6 @@
 package com.example.gromit.service;
 
+import com.example.gromit.dto.challenge.request.PostChallengeListRequestDto;
 import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
@@ -11,9 +12,13 @@ import com.example.gromit.entity.Member;
 import com.example.gromit.entity.UserAccount;
 import com.example.gromit.exception.BadRequestException;
 import com.example.gromit.exception.NotFoundException;
+import com.example.gromit.repository.ChallengeQueryRepository;
 import com.example.gromit.repository.ChallengeRepository;
+import com.example.gromit.repository.MemberQueryRepository;
 import com.example.gromit.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,20 +37,24 @@ public class ChallengeService {
     private static final Pattern PASSWORD_PATTERN = Pattern.compile("^[0-9a-zA-Z]{1,10}$");
     private final ChallengeRepository challengeRepository;
     private final MemberRepository memberRepository;
+    private final ChallengeQueryRepository challengeQueryRepository;
+    private final MemberQueryRepository memberQueryRepository;
 
-    public List<GetChallengeGroupResponse> findChallenges() {
+    public Slice<GetChallengeGroupResponse> findChallenges(UserAccount userAccount, PostChallengeListRequestDto postChallengeListRequestDto, Pageable pageable) {
 
-        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual(false,LocalDate.now())
-                .stream()
-                .map(GetChallengeGroupResponse::from)
-                .collect(Collectors.toList());
+        return challengeQueryRepository.searchBySlice(userAccount, postChallengeListRequestDto.getLastChallengeId(), pageable);
+
+//        return challengeRepository.findAllByIsDeletedAndStartDateGreaterThanEqual(false, LocalDate.now())
+//                .stream()
+//                .map(GetChallengeGroupResponse::from)
+//                .collect(Collectors.toList());
     }
 
     public Challenge saveChallenge(UserAccount userAccount, PostChallengeRequest postChallengeRequest) {
 
-        if(postChallengeRequest.isPasswordSet()){
-            String password= postChallengeRequest.getPassword();
-            if(!isValidPassword(password)){
+        if (postChallengeRequest.isPasswordSet()) {
+            String password = postChallengeRequest.getPassword();
+            if (!isValidPassword(password)) {
                 throw new BadRequestException(NOT_VALID_CHALLENGE_PASSWORD);
             }
         }
@@ -68,7 +77,7 @@ public class ChallengeService {
     /**
      * password 정규식 패턴 체크
      */
-    public boolean isValidPassword(String password){
+    public boolean isValidPassword(String password) {
         Matcher matcher = PASSWORD_PATTERN.matcher(password);
         return matcher.matches();
     }
@@ -110,7 +119,7 @@ public class ChallengeService {
         return LocalDate.now().compareTo(challenge.getStartDate()) >= 0 && LocalDate.now().compareTo(challenge.getEndDate()) <= 0;
     }
 
-    public Challenge findById(Long challengeId){
+    public Challenge findById(Long challengeId) {
         return challengeRepository.findById(challengeId).get();
     }
 
@@ -152,7 +161,7 @@ public class ChallengeService {
                     throw new BadRequestException(DUPLICATED_MEMBER);
                 });
 
-        int commits=0;
+        int commits = 0;
         if (challenge.getStartDate().equals(LocalDate.now())) { // 챌린지 시작날짜와 참여날짜가 같을 때는 커밋수에 오늘의 커밋수 세팅
             commits = userAccount.getTodayCommit();
         }
@@ -167,9 +176,9 @@ public class ChallengeService {
         memberRepository.save(member);
     }
 
-    public void comparePassword (Long challengeId, PostChallengePasswordRequest postChallengePasswordRequest) {
+    public void comparePassword(Long challengeId, PostChallengePasswordRequest postChallengePasswordRequest) {
         Challenge challenge = challengeRepository.findById(challengeId).get();
-        if(!isCorrectChallengePassword(postChallengePasswordRequest, challenge)){
+        if (!isCorrectChallengePassword(postChallengePasswordRequest, challenge)) {
             throw new BadRequestException(INCORRECT_PASSWORD);
         }
     }
@@ -181,12 +190,15 @@ public class ChallengeService {
     /**
      * 참여 챌린지 목록 비즈니스 로직
      */
-    public List<GetMyChallengeGroupResponse> findMyChallengeGroup(UserAccount userAccount) {
+    public Slice<GetMyChallengeGroupResponse> findMyChallengeGroup(UserAccount userAccount, PostChallengeListRequestDto postChallengeListRequestDto, Pageable pageable) {
 
-        return memberRepository.findAllByIsDeletedAndUserAccountId(false, userAccount.getId())
-                .stream()
-                .map(GetMyChallengeGroupResponse::from)
-                .collect(Collectors.toList());
+        return memberQueryRepository.searchMyChallengeBySlice(userAccount, postChallengeListRequestDto.getLastChallengeId(), pageable);
+
+//
+//        return memberRepository.findAllByIsDeletedAndUserAccountId(false, userAccount.getId())
+//                .stream()
+//                .map(GetMyChallengeGroupResponse::from)
+//                .collect(Collectors.toList());
     }
 
 

@@ -1,6 +1,7 @@
 package com.example.gromit.controller;
 
 import com.example.gromit.base.BaseResponse;
+import com.example.gromit.dto.challenge.request.PostChallengeListRequestDto;
 import com.example.gromit.dto.challenge.request.PostChallengePasswordRequest;
 import com.example.gromit.dto.challenge.request.PostChallengeRequest;
 import com.example.gromit.dto.challenge.response.GetChallengeGroupResponse;
@@ -13,6 +14,8 @@ import com.example.gromit.service.ChallengeService;
 import com.example.gromit.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -37,8 +40,9 @@ public class ChallengeController {
      * 챌린지 목록 조회 API
      */
     @GetMapping
-    public BaseResponse<List<GetChallengeGroupResponse>> challenges(@AuthenticationPrincipal UserAccount userAccount){
-        List<GetChallengeGroupResponse> result= challengeService.findChallenges();
+    public BaseResponse<Slice<GetChallengeGroupResponse>> challenges(@AuthenticationPrincipal UserAccount userAccount, @RequestBody PostChallengeListRequestDto postChallengeListRequestDto, Pageable pageable) {
+        System.out.println("userAccount = " + userAccount);
+        Slice<GetChallengeGroupResponse> result = challengeService.findChallenges(userAccount, postChallengeListRequestDto, pageable);
         return BaseResponse.onSuccess(result);
     }
 
@@ -48,15 +52,15 @@ public class ChallengeController {
     @PostMapping
     public BaseResponse<String> postChallenge(@AuthenticationPrincipal UserAccount userAccount,
                                               @Valid @RequestBody PostChallengeRequest postChallengeRequest,
-                                              BindingResult bindingResult){
+                                              BindingResult bindingResult) {
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             ObjectError objectError = bindingResult.getAllErrors().stream().findFirst().get();
             return BaseResponse.onFailure(400, objectError.getDefaultMessage(), null);
         }
 
         Challenge challenge = challengeService.saveChallenge(userAccount, postChallengeRequest);
-        memberService.saveMember(userAccount,challenge);
+        memberService.saveMember(userAccount, challenge);
 
         return BaseResponse.onSuccess("챌린지 생성에 성공했습니다.");
 
@@ -92,9 +96,9 @@ public class ChallengeController {
     }
 
     @PostMapping("/{challengeId}/password") // 패스워드 확인
-    public BaseResponse<String> comparePassword (@PathVariable Long challengeId,
-                                                 @AuthenticationPrincipal UserAccount userAccount,
-                                                 @Validated @RequestBody PostChallengePasswordRequest postChallengePasswordRequest, BindingResult bindingResult) {
+    public BaseResponse<String> comparePassword(@PathVariable Long challengeId,
+                                                @AuthenticationPrincipal UserAccount userAccount,
+                                                @Validated @RequestBody PostChallengePasswordRequest postChallengePasswordRequest, BindingResult bindingResult) {
 
         System.out.println("challengeId = " + challengeId);
 
@@ -111,8 +115,8 @@ public class ChallengeController {
      * 참여 챌린지 목록 API
      */
     @GetMapping("/my")
-    public BaseResponse<List<GetMyChallengeGroupResponse>> myChallengeGroup(@AuthenticationPrincipal UserAccount userAccount){
-        List<GetMyChallengeGroupResponse> result = challengeService.findMyChallengeGroup(userAccount);
+    public BaseResponse<Slice<GetMyChallengeGroupResponse>> myChallengeGroup(@AuthenticationPrincipal UserAccount userAccount, @RequestBody PostChallengeListRequestDto postChallengeListRequestDto, Pageable pageable) {
+        Slice<GetMyChallengeGroupResponse> result = challengeService.findMyChallengeGroup(userAccount, postChallengeListRequestDto, pageable);
         return BaseResponse.onSuccess(result);
     }
 

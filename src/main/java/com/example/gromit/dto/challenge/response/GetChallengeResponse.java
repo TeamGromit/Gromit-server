@@ -18,7 +18,7 @@ public class GetChallengeResponse {
     private final String nickname;
     private final int goal;
 
-    private GetChallengeResponse(String title, LocalDate startDate, LocalDate endDate, String nickname, int goal) {
+    public GetChallengeResponse(String title, LocalDate startDate, LocalDate endDate, String nickname, int goal) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
