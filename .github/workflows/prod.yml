@@ -28,7 +28,7 @@ jobs:
           distribution: 'temurin'
 
       - run: touch ./src/main/resources/application-prod.yml
-      - run: echo "${{ secrets.APPLICATION_DEV }}" > ./src/main/resources/application-prod.yml
+      - run: echo "${{ secrets.APPLICATION_PROD }}" > ./src/main/resources/application-prod.yml
       - run: cat ./src/main/resources/application-prod.yml
 
       - name: Set yml file
