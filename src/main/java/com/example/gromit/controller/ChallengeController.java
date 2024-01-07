@@ -39,7 +39,7 @@ public class ChallengeController {
     /**
      * 챌린지 목록 조회 API
      */
-    @GetMapping
+    @PostMapping("/list")
     public BaseResponse<Slice<GetChallengeGroupResponse>> challenges(@AuthenticationPrincipal UserAccount userAccount, @RequestBody PostChallengeListRequestDto postChallengeListRequestDto, Pageable pageable) {
         System.out.println("userAccount = " + userAccount);
         Slice<GetChallengeGroupResponse> result = challengeService.findChallenges(userAccount, postChallengeListRequestDto, pageable);
