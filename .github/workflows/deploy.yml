@@ -37,7 +37,7 @@ jobs:
         with:
           files: ${{ env.RESOURCE_PATH }}
         env:
-          spring.datasource.url: ${{ secrets.RDS_HOST }}
+          spring.datasource.url: ${{ secrets.RDS_HOST_DEV }}
           spring.datasource.username: ${{ secrets.RDS_USERNAME }}
           spring.datasource.password: ${{ secrets.RDS_PASSWORD }}
           jwt.secret: ${{ secrets.JWT_SECRET }}
